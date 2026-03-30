@@ -3,6 +3,7 @@ using Aion2DPSViewer.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -25,7 +26,12 @@ public class CombatScore
             return null;
         string calcJs = FileCache.ReadRaw("calc_js_cache.js");
         if (calcJs == null)
-            throw new Exception("calc_js 로드 실패");
+        {
+            calcJs = await DownloadCalcJs();
+            if (calcJs == null)
+                throw new Exception("calc_js 로드 실패");
+            FileCache.WriteRaw("calc_js_cache.js", calcJs);
+        }
         FormulaConfig cfg = LoadFormulaConfig();
         SupplementResult supplement = Supplement.CalcSupplement(data.StatData, data.ItemDetails);
         JsonElement? skillPriorities = LoadSkillPriorities(data.ClassName);
@@ -395,6 +401,30 @@ public class CombatScore
         JsonElement? nullable = FileCache.LoadCache("skill_priorities_cache.json");
         JsonElement jsonElement;
         return nullable.HasValue && nullable.Value.TryGetProperty(job, out jsonElement) ? jsonElement : (JsonElement?)null;
+    }
+
+    private static readonly HttpClient _http = new HttpClient() { Timeout = TimeSpan.FromSeconds(15) };
+
+    private static async Task<string?> DownloadCalcJs()
+    {
+        try
+        {
+            string url = Secrets.FormulaUrl;
+            Console.Error.WriteLine("[calc] calc_js 다운로드 중: " + url);
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.Add("User-Agent", "Mozilla/5.0");
+            req.Headers.Add("Referer", Secrets.FormulaReferer);
+            HttpResponseMessage res = await _http.SendAsync(req);
+            res.EnsureSuccessStatusCode();
+            string js = await res.Content.ReadAsStringAsync();
+            Console.Error.WriteLine($"[calc] calc_js 다운로드 완료 ({js.Length} bytes)");
+            return js;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("[calc] calc_js 다운로드 실패: " + ex.Message);
+            return null;
+        }
     }
 
     static CombatScore()
