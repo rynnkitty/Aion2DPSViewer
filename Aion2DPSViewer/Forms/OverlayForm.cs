@@ -476,7 +476,7 @@ public class OverlayForm : Form
         }));
         s.PartyUpdate += members => BeginInvoke((Action)(() =>
         {
-            List<PartyMember> newMembers;
+            List<PartyMember> newMembers = new List<PartyMember>();
             _bridge?.SendToJs("party-sync", _partyTracker.OnPartyUpdate(members, out newMembers));
             foreach (PartyMember partyMember in newMembers)
             {

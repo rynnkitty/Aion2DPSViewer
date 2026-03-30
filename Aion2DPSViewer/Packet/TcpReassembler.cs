@@ -38,7 +38,7 @@ internal sealed class TcpReassembler
             _expectedSeq = seqNum;
             _initialized = true;
         }
-        long tickCount64 = Environment.TickCount64;
+        long tickCount64 = (long)(uint)Environment.TickCount;
         if (_outOfOrder.Count > 0 && _lastActivityTicks > 0L && tickCount64 - _lastActivityTicks > 2000L)
             ForceFlush();
         int num1 = (int)seqNum - (int)_expectedSeq;

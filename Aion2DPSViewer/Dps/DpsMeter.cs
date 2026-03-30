@@ -667,7 +667,7 @@ public class DpsMeter : IDisposable
             string name1 = nickname ?? $"#{entityId}";
             LogPacket($"CB OnUserInfo {FeedRef()} entity={entityId} name=\"{name1}\" server={serverId} job={jobCode} isSelf={isSelf}");
             string name2 = StripServerSuffix(name1);
-            if (name2.Length < 1 || serverId < 1001 || serverId > 2999 || name2.StartsWith('#'))
+            if (name2.Length < 1 || serverId < 1001 || serverId > 2999 || name2.StartsWith("#"))
             {
                 SetEntityName(entityId, name2);
             }

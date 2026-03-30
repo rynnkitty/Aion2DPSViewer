@@ -225,7 +225,7 @@ public sealed class PacketProcessor : IDisposable
             tcpReassembler.Feed(pkt.SeqNum, pkt.Data);
             if (!flag || tcpReassembler.DiagInfo == null)
                 return;
-            long tickCount64 = Environment.TickCount64;
+            long tickCount64 = (long)(uint)Environment.TickCount;
             if (tickCount64 - _lastReassemblerDiagTick <= 30000L)
                 return;
             _lastReassemblerDiagTick = tickCount64;

@@ -450,7 +450,7 @@ public class PartyStreamParser
                 string nick;
                 try
                 {
-                    nick = Encoding.UTF8.GetString(packet.Slice(num1 + 1, num2));
+                    nick = Encoding.UTF8.GetString(packet.Slice(num1 + 1, num2).ToArray());
                 }
                 catch
                 {
@@ -538,7 +538,7 @@ public class PartyStreamParser
                         string nick;
                         try
                         {
-                            nick = Encoding.UTF8.GetString(packet.Slice(num1 + 1, index2));
+                            nick = Encoding.UTF8.GetString(packet.Slice(num1 + 1, index2).ToArray());
                         }
                         catch
                         {
@@ -605,7 +605,7 @@ public class PartyStreamParser
         string nick;
         try
         {
-            nick = Encoding.UTF8.GetString(packet.Slice(dataOffset + 11, num3));
+            nick = Encoding.UTF8.GetString(packet.Slice(dataOffset + 11, num3).ToArray());
         }
         catch
         {

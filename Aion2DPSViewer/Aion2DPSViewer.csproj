@@ -46,13 +46,13 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.Web.WebView2.Core">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2849.39\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2849.39\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.WebView2.WinForms">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2849.39\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.2849.39\lib\net462\Microsoft.Web.WebView2.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="PacketDotNet">
-      <HintPath>..\packages\PacketDotNet.1.4.7\lib\net46\PacketDotNet.dll</HintPath>
+      <HintPath>..\packages\PacketDotNet.1.4.7\lib\net47\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="SharpPcap">
       <HintPath>..\packages\SharpPcap.6.3.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
@@ -76,15 +76,16 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="Jint">
-      <HintPath>..\packages\Jint.4.1.0\lib\net48\Jint.dll</HintPath>
+      <HintPath>..\packages\Jint.4.1.0\lib\net462\Jint.dll</HintPath>
     </Reference>
-    <Reference Include="Esprima">
-      <HintPath>..\packages\Esprima.4.1.0\lib\net48\Esprima.dll</HintPath>
+    <Reference Include="Acornima">
+      <HintPath>..\packages\Acornima.1.1.0\lib\net462\Acornima.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Polyfills.cs" />
     <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\EmbeddedWebServer.cs" />
     <Compile Include="Core\ErrorReporter.cs" />

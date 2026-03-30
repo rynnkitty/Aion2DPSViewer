@@ -47,7 +47,7 @@ public static class EmbeddedWebServer
         Console.Error.WriteLine($"[embedded] {_cache.Count}개 웹 리소스 로드");
         foreach (string key in _cache.Keys)
         {
-            if (key.Contains("font", StringComparison.OrdinalIgnoreCase))
+            if (key.IndexOf("font", StringComparison.OrdinalIgnoreCase) >= 0)
                 Console.Error.WriteLine("[embedded]   font: " + key);
         }
     }
@@ -82,7 +82,7 @@ public static class EmbeddedWebServer
         }
         if (valueTuple.Item1 != null)
         {
-            if (str1.Contains("font", StringComparison.OrdinalIgnoreCase))
+            if (str1.IndexOf("font", StringComparison.OrdinalIgnoreCase) >= 0)
                 Console.Error.WriteLine($"[embedded] 서빙: {str1} ({valueTuple.Item1.Length} bytes)");
             MemoryStream Content = new MemoryStream(valueTuple.Item1);
             CoreWebView2 coreWebView2 = (CoreWebView2)sender;
@@ -91,7 +91,7 @@ public static class EmbeddedWebServer
         }
         else
         {
-            if (!str1.Contains("font", StringComparison.OrdinalIgnoreCase))
+            if (str1.IndexOf("font", StringComparison.OrdinalIgnoreCase) < 0)
                 return;
             Console.Error.WriteLine("[embedded] 미발견: " + str1);
         }

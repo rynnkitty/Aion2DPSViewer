@@ -344,7 +344,7 @@ public class SkillDatabase
 
     public IntPtr GetSkillNameCallback(int skillCode, IntPtr _1)
     {
-        return !_skills.TryGetValue(skillCode, out string? name) ? IntPtr.Zero : _skillNamePtrs.GetOrAdd(skillCode, _2 => Marshal.StringToCoTaskMemUTF8(name));
+        return !_skills.TryGetValue(skillCode, out string? name) ? IntPtr.Zero : _skillNamePtrs.GetOrAdd(skillCode, _2 => StringToCoTaskMemUtf8(name));
     }
 
     public int ContainsSkillCodeCallback(int skillCode, IntPtr _) => _skills.ContainsKey(skillCode) ? 1 : 0;
@@ -356,6 +356,15 @@ public class SkillDatabase
         foreach (IntPtr ptr in _skillNamePtrs.Values)
             Marshal.FreeCoTaskMem(ptr);
         _skillNamePtrs.Clear();
+    }
+
+    private static IntPtr StringToCoTaskMemUtf8(string s)
+    {
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+        IntPtr ptr = Marshal.AllocCoTaskMem(bytes.Length + 1);
+        Marshal.Copy(bytes, 0, ptr, bytes.Length);
+        Marshal.WriteByte(ptr, bytes.Length, 0);
+        return ptr;
     }
 
     private record MobData(string Name, bool IsBoss);
