@@ -5,252 +5,281 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg: rgba(10,14,30,0.88);
-  --titlebar: rgba(8,12,25,0.95);
-  --border: rgba(255,255,255,0.08);
-  --text: #e0e8ff;
-  --muted: #8899bb;
-  --accent: #5599ff;
-  --font-ui: 'Segoe UI','Malgun Gothic',sans-serif;
-  --font-num: 'Consolas','Courier New',monospace;
-  --p0: #5599ff; --p1: #ff6b6b; --p2: #54d48a; --p3: #ffcc44;
-  --p4: #cc77ff; --p5: #ff9944; --p6: #44ddcc; --p7: #ff7799;
+  --bg:rgba(11,15,32,0.93);
+  --tb:rgba(7,10,24,0.97);
+  --sr:rgba(9,13,28,0.95);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.04);
+  --text:#ddeeff;
+  --muted:#5577aa;
+  --dim:#334466;
+  --accent:#4488ff;
+  --green:#3ddc84;
+  --logo:#64c8ff;
+  --dps-active:#f0a500;
+  --fn:'Segoe UI','Malgun Gothic',sans-serif;
+  --fm:'Consolas','Courier New',monospace;
 }
-html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font-ui)}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--fn)}
 body{background:transparent;color:var(--text);font-size:11px;user-select:none;-webkit-user-select:none}
+#app{width:100%;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative}
 
-#app{width:100%;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+/* resize handles */
+.rz{position:absolute;z-index:200}
+.rz-n{top:0;left:8px;right:8px;height:5px;cursor:n-resize}
+.rz-s{bottom:0;left:8px;right:8px;height:5px;cursor:s-resize}
+.rz-e{right:0;top:8px;bottom:8px;width:5px;cursor:e-resize}
+.rz-w{left:0;top:8px;bottom:8px;width:5px;cursor:w-resize}
+.rz-ne{top:0;right:0;width:10px;height:10px;cursor:ne-resize}
+.rz-nw{top:0;left:0;width:10px;height:10px;cursor:nw-resize}
+.rz-se{bottom:0;right:0;width:10px;height:10px;cursor:se-resize}
+.rz-sw{bottom:0;left:0;width:10px;height:10px;cursor:sw-resize}
 
-/* Resize edges */
-.resize-n,.resize-s,.resize-e,.resize-w,.resize-ne,.resize-nw,.resize-se,.resize-sw{position:absolute;z-index:100}
-.resize-n{top:0;left:6px;right:6px;height:6px;cursor:n-resize}
-.resize-s{bottom:0;left:6px;right:6px;height:6px;cursor:s-resize}
-.resize-e{right:0;top:6px;bottom:6px;width:6px;cursor:e-resize}
-.resize-w{left:0;top:6px;bottom:6px;width:6px;cursor:w-resize}
-.resize-ne{top:0;right:0;width:10px;height:10px;cursor:ne-resize}
-.resize-nw{top:0;left:0;width:10px;height:10px;cursor:nw-resize}
-.resize-se{bottom:0;right:0;width:10px;height:10px;cursor:se-resize}
-.resize-sw{bottom:0;left:0;width:10px;height:10px;cursor:sw-resize}
-
-/* Title bar */
-#titlebar{
-  height:28px;min-height:28px;
-  background:var(--titlebar);
+/* ── Title bar ── */
+#tb{
+  height:32px;min-height:32px;flex-shrink:0;
+  background:var(--tb);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;
-  padding:0 4px 0 6px;gap:2px;
-  cursor:move;flex-shrink:0;
+  padding:0 5px 0 7px;gap:0;
+  cursor:move;
 }
-#titlebar .logo{
-  font-size:10px;font-weight:700;letter-spacing:1.5px;
-  color:var(--accent);text-transform:uppercase;margin-right:4px;
-  flex-shrink:0;cursor:move;
+.brand{display:flex;flex-direction:column;justify-content:center;margin-right:6px;line-height:1;cursor:move;flex-shrink:0}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--logo);text-transform:uppercase}
+.brand-ver{font-size:8px;color:var(--muted);letter-spacing:.5px;margin-top:1px}
+.tab-group{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.tabx{
+  height:22px;padding:0 9px;border:none;
+  background:transparent;color:var(--muted);
+  font-size:10px;font-family:var(--fn);font-weight:600;
+  cursor:pointer;border-radius:3px;transition:all .12s;
+  letter-spacing:.3px;
 }
-.tab-btn{
-  height:20px;padding:0 8px;border:none;background:transparent;
-  color:var(--muted);font-size:10px;font-family:var(--font-ui);
-  cursor:pointer;border-radius:2px;transition:all .15s;letter-spacing:.5px;
-  flex-shrink:0;
-}
-.tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.05)}
-.tab-btn.active{color:var(--accent);background:rgba(85,153,255,0.12)}
-#titlebar .spacer{flex:1;cursor:move}
-#btn-reset{
-  width:22px;height:22px;border:none;background:transparent;
-  color:var(--muted);font-size:14px;cursor:pointer;
-  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
-#btn-reset:hover{color:var(--text);background:rgba(255,255,255,0.07)}
-#btn-settings{
+.tabx:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+.tabx.active-lookup{color:#fff;background:rgba(255,255,255,0.1)}
+.tabx.active-dps{color:#1a1000;background:var(--dps-active);font-weight:700}
+.tb-sep{flex:1;cursor:move}
+.ctrl-group{display:flex;align-items:center;gap:1px;flex-shrink:0}
+.ctrl{
   width:22px;height:22px;border:none;background:transparent;
   color:var(--muted);font-size:12px;cursor:pointer;
-  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+  border-radius:2px;transition:all .12s;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-#btn-settings:hover{color:var(--text);background:rgba(255,255,255,0.07)}
-#btn-close{
-  width:22px;height:22px;border:none;background:transparent;
-  color:var(--muted);font-size:14px;cursor:pointer;
-  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+.ctrl:hover{color:var(--text);background:rgba(255,255,255,0.07)}
+.ctrl.active{color:var(--accent)}
+#btn-close:hover{color:#ff4444;background:rgba(255,40,40,0.15)}
+#opacity-wrap{display:flex;align-items:center;padding:0 2px;flex-shrink:0}
+#opacity-slider{
+  width:44px;height:3px;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  background:rgba(255,255,255,0.15);border-radius:2px;outline:none;
 }
-#btn-close:hover{color:#ff5555;background:rgba(255,60,60,0.15)}
+#opacity-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:9px;height:9px;border-radius:50%;
+  background:var(--accent);cursor:pointer;
+}
 
-/* Content area */
+/* ── Status row ── */
+#sr{
+  height:22px;min-height:22px;flex-shrink:0;
+  background:var(--sr);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 6px;gap:6px;
+}
+.st-dot{width:6px;height:6px;border-radius:50%;background:#334466;flex-shrink:0;transition:background .3s}
+.st-dot.ok{background:var(--green)}
+.st-dot.err{background:#ff4444}
+#st-text{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+#st-text .st-name{color:var(--text);font-weight:600}
+#st-text .st-ping{color:var(--muted);font-family:var(--fm)}
+.sort-group{display:flex;gap:2px;flex-shrink:0}
+.sbtn{
+  height:16px;padding:0 5px;border:none;border-radius:2px;
+  font-size:9px;font-family:var(--fn);font-weight:600;cursor:pointer;
+  background:rgba(255,255,255,0.06);color:var(--muted);
+  transition:all .12s;letter-spacing:.2px;
+}
+.sbtn:hover{opacity:.8}
+.sbtn.s0{color:#cc4444}.sbtn.s0.on{background:#cc4444;color:#fff}
+.sbtn.s1{color:#cc44aa}.sbtn.s1.on{background:#cc44aa;color:#fff}
+.sbtn.s2{color:#4499cc}.sbtn.s2.on{background:#4499cc;color:#fff}
+.sbtn.s3{color:#778899}.sbtn.s3.on{background:#778899;color:#fff}
+
+/* ── Content ── */
 #content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-
-/* Tabs */
 .tab-pane{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden}
 .tab-pane.active{display:flex}
 
-/* Idle state */
-#idle-msg{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:6px;
-  color:var(--muted);font-size:11px;
-}
-#idle-msg .idle-icon{font-size:22px;opacity:.35}
-#idle-msg .idle-text{opacity:.6;letter-spacing:.5px}
-#idle-msg .status-hint{font-size:10px;opacity:.35;max-width:140px;text-align:center;line-height:1.5}
-
-/* DPS table */
-#dps-pane{overflow:hidden}
-#dps-header{
-  display:grid;grid-template-columns:18px 1fr 72px 40px 38px;
-  padding:3px 6px;gap:4px;
-  font-size:9px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;
-  border-bottom:1px solid var(--border);flex-shrink:0;
-  background:rgba(0,0,0,0.15);
-}
-#dps-header span:nth-child(n+3){text-align:right}
-#dps-rows{flex:1;overflow-y:auto;overflow-x:hidden}
-#dps-rows::-webkit-scrollbar{width:2px}
-#dps-rows::-webkit-scrollbar-track{background:transparent}
-#dps-rows::-webkit-scrollbar-thumb{background:rgba(85,153,255,0.2);border-radius:1px}
-
-.dps-row{
-  display:grid;grid-template-columns:18px 1fr 72px 40px 38px;
-  padding:3px 6px;gap:4px;cursor:pointer;
-  transition:background .1s;position:relative;align-items:center;
-  border-bottom:1px solid rgba(255,255,255,0.02);
-}
-.dps-row:hover{background:rgba(255,255,255,0.05)}
-.dps-row.active-row{background:rgba(85,153,255,0.08)}
-.dps-row .rank{font-size:9px;color:var(--muted);font-family:var(--font-num);text-align:center}
-.dps-row .pname{
-  font-size:11px;color:var(--text);overflow:hidden;
-  white-space:nowrap;text-overflow:ellipsis;
-  position:relative;z-index:1;
-}
-.dps-row .pname .bar{
-  position:absolute;left:0;top:0;bottom:0;
-  opacity:.18;border-radius:1px;transition:width .35s ease;
-  z-index:-1;
-}
-.dps-row .pdps{font-family:var(--font-num);font-size:11px;color:var(--text);text-align:right}
-.dps-row .ppct{font-family:var(--font-num);font-size:10px;color:var(--muted);text-align:right}
-.dps-row .pcrit{font-family:var(--font-num);font-size:10px;color:var(--muted);text-align:right}
-
-.no-data{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  color:var(--muted);font-size:11px;opacity:.5;letter-spacing:.5px;
-}
-
-/* Party tab */
-#party-pane{overflow:hidden}
-#party-rows{flex:1;overflow-y:auto}
-#party-rows::-webkit-scrollbar{width:2px}
-#party-rows::-webkit-scrollbar-track{background:transparent}
-#party-rows::-webkit-scrollbar-thumb{background:rgba(85,153,255,0.2);border-radius:1px}
+/* ── 조회 tab ── */
+#lookup-pane{}
+#party-list{flex:1;overflow-y:auto;overflow-x:hidden}
+#party-list::-webkit-scrollbar{width:2px}
+#party-list::-webkit-scrollbar-thumb{background:rgba(68,136,255,0.2);border-radius:1px}
 .party-row{
-  padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.03);
-  display:flex;align-items:center;gap:6px;
+  display:flex;align-items:center;gap:7px;
+  padding:5px 8px;border-bottom:1px solid var(--border2);
+  cursor:default;transition:background .1s;
 }
-.party-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.6;flex-shrink:0}
-.party-name{font-size:11px;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.party-empty{
+.party-row:hover{background:rgba(255,255,255,0.03)}
+.job-icon{
+  width:22px;height:22px;border-radius:3px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;letter-spacing:0;
+}
+.party-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.party-name{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.party-name .srv{color:var(--muted);font-weight:400}
+.party-loading{font-size:10px;color:var(--muted);font-style:italic}
+.party-cp{font-family:var(--fm);font-size:11px;color:#88ccff;text-align:right;flex-shrink:0;min-width:54px}
+.self-badge{
+  height:16px;padding:0 5px;border-radius:2px;
+  background:rgba(61,220,132,0.2);border:1px solid rgba(61,220,132,0.3);
+  color:var(--green);font-size:9px;font-weight:700;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.empty-msg{
   flex:1;display:flex;align-items:center;justify-content:center;
   color:var(--muted);font-size:11px;opacity:.45;letter-spacing:.3px;
 }
 
-/* Status bar */
-#statusbar{
-  height:18px;min-height:18px;flex-shrink:0;
-  background:rgba(0,0,0,0.3);border-top:1px solid var(--border);
-  display:flex;align-items:center;padding:0 7px;gap:8px;
+/* ── DPS tab ── */
+#dps-pane{}
+#dps-inforow{
+  height:20px;min-height:20px;flex-shrink:0;
+  display:flex;align-items:center;padding:0 8px;gap:0;
+  border-bottom:1px solid var(--border2);background:rgba(0,0,0,0.12);
 }
-#statusbar .stat-item{
-  display:flex;align-items:center;gap:3px;
-  font-size:9px;color:var(--muted);
+#dps-elapsed{font-family:var(--fm);font-size:10px;color:var(--muted)}
+#dps-inforow .i-sep{flex:1}
+#dps-total{font-size:10px;color:var(--muted);margin-right:4px}
+#btn-shot{
+  width:18px;height:18px;border:none;background:transparent;
+  color:var(--dim);font-size:11px;cursor:pointer;border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
 }
-#statusbar .stat-item .label{opacity:.55;letter-spacing:.5px}
-#statusbar .stat-item .val{font-family:var(--font-num)}
-#statusbar .spacer{flex:1}
-#sniffer-status{font-size:9px;color:var(--muted);opacity:.5;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-#sniffer-status.error{color:#ff7777;opacity:.8}
+#btn-shot:hover{color:var(--muted);background:rgba(255,255,255,0.06)}
 
-/* Compact mode */
-#app.compact #titlebar{display:none}
-#app.compact #statusbar{display:none}
+#dps-list{flex:1;overflow-y:auto;overflow-x:hidden}
+#dps-list::-webkit-scrollbar{width:2px}
+#dps-list::-webkit-scrollbar-thumb{background:rgba(68,136,255,0.2);border-radius:1px}
+
+.dps-row{
+  display:flex;align-items:center;gap:0;
+  padding:0 8px;height:28px;
+  border-bottom:1px solid var(--border2);
+  cursor:pointer;transition:background .1s;position:relative;overflow:hidden;
+}
+.dps-row:hover{background:rgba(255,255,255,0.04)}
+.dps-bar{
+  position:absolute;left:0;top:0;bottom:0;
+  opacity:.15;transition:width .4s ease;pointer-events:none;
+}
+.dps-rank{font-size:9px;color:var(--dim);width:14px;text-align:center;flex-shrink:0;z-index:1}
+.dps-job{
+  width:20px;height:20px;border-radius:2px;flex-shrink:0;z-index:1;margin:0 4px 0 2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:700;color:#fff;
+}
+.dps-name{flex:1;font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:1;font-weight:500}
+.dps-val{font-family:var(--fm);font-size:11px;color:var(--text);text-align:right;z-index:1;min-width:54px;flex-shrink:0}
+.dps-pct{font-family:var(--fm);font-size:10px;color:var(--muted);text-align:right;z-index:1;min-width:34px;flex-shrink:0}
+.dps-crit{font-family:var(--fm);font-size:10px;color:var(--dim);text-align:right;z-index:1;min-width:32px;flex-shrink:0}
+
+/* ── Compact ── */
+#app.compact #tb{display:none}
+#app.compact #sr{display:none}
 #app.compact #content{display:none}
 #compact-bar{
   display:none;height:100%;
-  background:rgba(8,12,25,0.92);
-  align-items:center;justify-content:space-between;
-  padding:0 8px;gap:6px;border-bottom:1px solid var(--border);
+  background:rgba(7,10,24,0.95);align-items:center;
+  padding:0 8px;gap:6px;cursor:move;
 }
-#app.compact{background:rgba(8,12,25,0.92)}
+#app.compact{background:rgba(7,10,24,0.95)}
 #app.compact #compact-bar{display:flex}
-.compact-top{font-size:10px;color:var(--accent);font-family:var(--font-num)}
-.compact-name{font-size:10px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:80px}
+.c-dot{width:5px;height:5px;border-radius:50%;background:#334466;flex-shrink:0}
+.c-dot.ok{background:var(--green)}
+.c-name{font-size:10px;color:var(--muted);max-width:70px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.c-dps{font-family:var(--fm);font-size:11px;color:var(--dps-active);font-weight:700}
+.c-label{font-size:9px;color:var(--dim)}
 </style>
 </head>
 <body>
 <div id="app">
-  <!-- Resize handles -->
-  <div class="resize-nw" data-dir="top-left"></div>
-  <div class="resize-n"  data-dir="top"></div>
-  <div class="resize-ne" data-dir="top-right"></div>
-  <div class="resize-e"  data-dir="right"></div>
-  <div class="resize-se" data-dir="bottom-right"></div>
-  <div class="resize-s"  data-dir="bottom"></div>
-  <div class="resize-sw" data-dir="bottom-left"></div>
-  <div class="resize-w"  data-dir="left"></div>
+  <!-- resize -->
+  <div class="rz rz-nw" data-dir="top-left"></div>
+  <div class="rz rz-n"  data-dir="top"></div>
+  <div class="rz rz-ne" data-dir="top-right"></div>
+  <div class="rz rz-e"  data-dir="right"></div>
+  <div class="rz rz-se" data-dir="bottom-right"></div>
+  <div class="rz rz-s"  data-dir="bottom"></div>
+  <div class="rz rz-sw" data-dir="bottom-left"></div>
+  <div class="rz rz-w"  data-dir="left"></div>
 
-  <!-- Compact bar (compact mode only) -->
+  <!-- compact -->
   <div id="compact-bar">
-    <span class="compact-name" id="compact-name">-</span>
-    <span class="compact-top" id="compact-dps">-</span>
+    <div class="c-dot" id="c-dot"></div>
+    <span class="c-name" id="c-name">-</span>
+    <div style="flex:1"></div>
+    <span class="c-label">DPS</span>
+    <span class="c-dps" id="c-dps">-</span>
   </div>
 
-  <!-- Title bar -->
-  <div id="titlebar">
-    <span class="logo">A2</span>
-    <button class="tab-btn active" id="tab-dps" onclick="switchTab('dps')">DPS</button>
-    <button class="tab-btn" id="tab-party" onclick="switchTab('party')">파티</button>
-    <div class="spacer"></div>
-    <button id="btn-reset" title="초기화">↺</button>
-    <button id="btn-settings" title="설정">⚙</button>
-    <button id="btn-close" title="닫기">×</button>
+  <!-- title bar -->
+  <div id="tb">
+    <div class="brand">
+      <span class="brand-name">A2VIEWER</span>
+      <span class="brand-ver" id="brand-ver">v0.0.0</span>
+    </div>
+    <div class="tab-group">
+      <button class="tabx active-lookup" id="tab-lookup" onclick="switchTab('lookup')">조회</button>
+      <button class="tabx" id="tab-dps" onclick="switchTab('dps')">DPS</button>
+    </div>
+    <div class="tb-sep"></div>
+    <div class="ctrl-group">
+      <button class="ctrl" id="btn-vis" title="표시/숨기기">👁</button>
+      <button class="ctrl" id="btn-lock" title="클릭 잠금">🔓</button>
+      <div id="opacity-wrap">
+        <input id="opacity-slider" type="range" min="10" max="100" value="80" title="투명도">
+      </div>
+      <button class="ctrl" id="btn-reset" title="초기화">↺</button>
+      <button class="ctrl" id="btn-settings" title="설정">⚙</button>
+      <button class="ctrl" id="btn-close" title="닫기">✕</button>
+    </div>
   </div>
 
-  <!-- Content -->
+  <!-- status row -->
+  <div id="sr">
+    <div class="st-dot" id="st-dot"></div>
+    <span id="st-text">연결 대기중...</span>
+    <div class="sort-group">
+      <button class="sbtn s0" id="sb0" onclick="setSort(0)">중검</button>
+      <button class="sbtn s1" id="sb1" onclick="setSort(1)">아이고</button>
+      <button class="sbtn s2 on" id="sb2" onclick="setSort(2)">전투력</button>
+      <button class="sbtn s3" id="sb3" onclick="setSort(3)">이름</button>
+    </div>
+  </div>
+
+  <!-- content -->
   <div id="content">
-    <!-- DPS Tab -->
-    <div class="tab-pane active" id="dps-pane">
-      <div id="dps-header">
-        <span>#</span><span>이름</span><span style="text-align:right">DPS</span><span style="text-align:right">비율</span><span style="text-align:right">크리</span>
-      </div>
-      <div id="dps-rows">
-        <div class="no-data" id="dps-empty">전투 대기중...</div>
+    <!-- 조회 tab -->
+    <div class="tab-pane active" id="lookup-pane">
+      <div id="party-list">
+        <div class="empty-msg" id="party-empty">파티 없음</div>
       </div>
     </div>
 
-    <!-- Party Tab -->
-    <div class="tab-pane" id="party-pane">
-      <div id="party-rows">
-        <div class="party-empty" id="party-empty">파티 없음</div>
+    <!-- DPS tab -->
+    <div class="tab-pane" id="dps-pane">
+      <div id="dps-inforow">
+        <span id="dps-elapsed">0초</span>
+        <div class="i-sep"></div>
+        <span id="dps-total">총 0</span>
+        <button id="btn-shot" title="스냅샷">▣</button>
+      </div>
+      <div id="dps-list">
+        <div class="empty-msg" id="dps-empty">대미지 데이터 없음</div>
       </div>
     </div>
-  </div>
-
-  <!-- Status bar -->
-  <div id="statusbar">
-    <div class="stat-item">
-      <span class="label">핑</span>
-      <span class="val" id="stat-ping">-</span>
-    </div>
-    <div class="stat-item" id="stat-time-wrap" style="display:none">
-      <span class="label">시간</span>
-      <span class="val" id="stat-time">0:00</span>
-    </div>
-    <div class="stat-item" id="stat-target-wrap" style="display:none">
-      <span class="label">대상</span>
-      <span class="val" id="stat-target" style="max-width:70px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis"></span>
-    </div>
-    <div class="spacer"></div>
-    <span id="sniffer-status">연결 대기중...</span>
   </div>
 </div>
 
@@ -258,231 +287,407 @@ body{background:transparent;color:var(--text);font-size:11px;user-select:none;-w
 (function(){
 'use strict';
 
-const COLORS = ['--p0','--p1','--p2','--p3','--p4','--p5','--p6','--p7'];
-const S = window.__SETTINGS__ || {};
-
-let state = {
-  tab: 'dps',
-  compact: false,
-  players: [],
-  party: [],
-  ping: -1,
-  snifferOk: false,
-  snifferMsg: '연결 대기중...',
-  snifferError: false,
-  elapsed: 0,
-  target: null,
-  clickLocked: false,
+// ── Job colors & labels ──────────────────────────
+const JOB_CODE_TO_KR = {7:'검성',8:'검성',11:'수호성',12:'수호성',15:'궁성',16:'궁성',
+  19:'살성',20:'살성',23:'정령성',24:'정령성',27:'정령성',28:'마도성',31:'치유성',32:'치유성',35:'호법성',36:'호법성'};
+const JOB_KR_TO_SHORT = {'검성':'검','궁성':'궁','마도성':'마','살성':'살','수호성':'수','정령성':'정','치유성':'치','호법성':'호'};
+const JOB_KR_TO_COLOR = {
+  '검성':'#cc3333','궁성':'#44aa44','마도성':'#4466cc','살성':'#aa44aa',
+  '수호성':'#cc8800','정령성':'#2299aa','치유성':'#33aa66','호법성':'#9944aa'
 };
 
+// Sort modes: 0=DPS순, 1=전체피해, 2=전투력, 3=이름
+const SORT_LABELS = ['중검','아이고','전투력','이름'];
+
+const S = window.__SETTINGS__ || {};
+
+// ── State ────────────────────────────────────────
+let state = {
+  tab: 'lookup',
+  compact: false,
+  clickLocked: false,
+  sortMode: 2,          // default: 전투력
+  // sniffer
+  snifferOk: false,
+  snifferMsg: '연결 대기중...',
+  snifferErr: false,
+  // self
+  selfKey: null,        // "nickname:serverId"
+  selfName: null,
+  ping: -1,
+  // party members: key = "nickname:serverId"
+  partyMap: {},         // {nickname, serverId, serverName, loading, error, cp, className, jobCode}
+  partyOrder: [],       // ordered keys
+  // dps
+  dpsPlayers: [],
+  elapsed: 0,
+  wallElapsed: 0,
+  target: null,
+  // version
+  version: S.version || '0.0.0',
+};
+
+// ── Helpers ──────────────────────────────────────
 function send(type, data){
   try{ window.chrome.webview.postMessage(JSON.stringify(data===undefined?{type}:{type,data})); }catch(e){}
 }
-
 function fmt(n){
-  n = Number(n)||0;
+  n=Number(n)||0;
   if(n>=1e9) return (n/1e9).toFixed(2)+'B';
   if(n>=1e6) return (n/1e6).toFixed(2)+'M';
   if(n>=1e3) return (n/1e3).toFixed(1)+'K';
   return String(n);
 }
+function fmtSec(s){
+  s=Math.floor(s||0);
+  if(s<60) return s+'초';
+  return Math.floor(s/60)+'분 '+(s%60)+'초';
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function jobColor(kr){ return JOB_KR_TO_COLOR[kr]||'#446688'; }
+function jobShort(kr){ return JOB_KR_TO_SHORT[kr]||kr?.charAt(0)||'?'; }
+function jobFromCode(code){ return JOB_CODE_TO_KR[code]||null; }
 
-function fmtTime(s){
-  s = Math.floor(s||0);
-  const m=Math.floor(s/60), ss=s%60;
-  return m+':'+(ss<10?'0':'')+ss;
+function jobIconHtml(kr, size){
+  const c=jobColor(kr), sh=jobShort(kr);
+  return `<div class="job-icon" style="background:${c};width:${size}px;height:${size}px">${esc(sh)}</div>`;
 }
 
-function colorFor(idx){
-  return 'var('+COLORS[idx % COLORS.length]+')';
+// ── Status bar ───────────────────────────────────
+function renderStatus(){
+  const dot=document.getElementById('st-dot');
+  const txt=document.getElementById('st-text');
+  if(state.snifferErr){
+    dot.className='st-dot err';
+    txt.innerHTML=`<span style="color:#ff6666">${esc(state.snifferMsg)}</span>`;
+  } else if(state.snifferOk){
+    dot.className='st-dot ok';
+    let s='';
+    if(state.selfName){
+      s+=`감지: <span class="st-name">${esc(state.selfName)}</span>`;
+      if(state.ping>=0) s+=` <span class="st-ping">${state.ping}ms</span>`;
+    } else {
+      s=state.snifferMsg;
+    }
+    txt.innerHTML=s;
+  } else {
+    dot.className='st-dot';
+    txt.textContent=state.snifferMsg;
+  }
+  // compact
+  const cdot=document.getElementById('c-dot');
+  cdot.className='c-dot'+(state.snifferOk?' ok':'');
+  if(state.selfName) document.getElementById('c-name').textContent=state.selfName;
 }
 
-// --- Render DPS ---
-function renderDps(){
-  const rows = document.getElementById('dps-rows');
-  const empty = document.getElementById('dps-empty');
-  if(!state.players || state.players.length===0){
-    empty.style.display='flex'; rows.innerHTML=''; rows.appendChild(empty); return;
+// ── Sort buttons ──────────────────────────────────
+function setSort(mode){
+  state.sortMode=mode;
+  [0,1,2,3].forEach(i=>{
+    const b=document.getElementById('sb'+i);
+    b.classList.toggle('on', i===mode);
+  });
+  renderLookup();
+  renderDps();
+}
+window.setSort=setSort;
+
+// ── Party / 조회 tab ─────────────────────────────
+function renderLookup(){
+  const list=document.getElementById('party-list');
+  const empty=document.getElementById('party-empty');
+  const keys=state.partyOrder;
+
+  if(!keys||keys.length===0){
+    list.innerHTML=''; list.appendChild(empty); empty.style.display='flex'; return;
   }
   empty.style.display='none';
-  const sorted = [...state.players].sort((a,b)=>b.dps-a.dps);
-  const topDps = sorted[0]?.dps||1;
+
+  // sort
+  let sorted=[...keys];
+  if(state.sortMode===2){ // 전투력
+    sorted.sort((a,b)=>(state.partyMap[b]?.cp||0)-(state.partyMap[a]?.cp||0));
+  } else if(state.sortMode===3){ // 이름
+    sorted.sort((a,b)=>a.localeCompare(b));
+  }
+
+  let html='';
+  sorted.forEach(key=>{
+    const m=state.partyMap[key]||{};
+    const name=m.nickname||key.split(':')[0];
+    const srv=m.serverName||'';
+    const isSelf=key===state.selfKey;
+    const kr=m.className||null;
+    const cp=m.cp||0;
+
+    html+=`<div class="party-row">`;
+    html+=jobIconHtml(kr||'?', 22);
+    html+=`<div class="party-info">`;
+    html+=`<span class="party-name">${esc(name)}<span class="srv">${srv?`[${esc(srv)}]`:''}</span></span>`;
+    if(m.loading) html+=`<span class="party-loading">조회 중...</span>`;
+    html+=`</div>`;
+    if(cp>0) html+=`<span class="party-cp">${cp.toLocaleString()}</span>`;
+    else if(!m.loading) html+=`<span class="party-cp" style="color:var(--dim)">-</span>`;
+    if(isSelf) html+=`<span class="self-badge">나</span>`;
+    html+=`</div>`;
+  });
+
+  list.innerHTML=html;
+}
+
+// ── DPS tab ───────────────────────────────────────
+const DPS_COLORS=['#5599ff','#ff6b6b','#54d48a','#ffcc44','#cc77ff','#ff9944','#44ddcc','#ff7799'];
+
+function renderDps(){
+  const list=document.getElementById('dps-list');
+  const empty=document.getElementById('dps-empty');
+  document.getElementById('dps-elapsed').textContent=fmtSec(state.elapsed);
+  document.getElementById('dps-total').textContent='총 '+(state.dpsPlayers?.length||0);
+
+  if(!state.dpsPlayers||state.dpsPlayers.length===0){
+    list.innerHTML=''; list.appendChild(empty); empty.style.display='flex'; return;
+  }
+  empty.style.display='none';
+
+  let sorted=[...state.dpsPlayers];
+  if(state.sortMode===3) sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(state.sortMode===2) sorted.sort((a,b)=>(b.combatPower||0)-(a.combatPower||0));
+  else sorted.sort((a,b)=>b.dps-a.dps); // default DPS sort
+
+  const topDps=sorted[0]?.dps||1;
+
   let html='';
   sorted.forEach((p,i)=>{
-    const barW = topDps>0?Math.max(1,Math.round(p.dps/topDps*100)):0;
-    const c = colorFor(i);
-    const crit = p.critRate?Math.round(p.critRate*100)+'%':'-';
-    const pct = p.damagePercent?Math.round(p.damagePercent*10)/10+'%':'-';
-    html+=`<div class="dps-row" data-eid="${p.entityId}">
-      <span class="rank">${i+1}</span>
-      <span class="pname">
-        <span class="bar" style="width:${barW}%;background:${c}"></span>
-        ${esc(p.name)}
-      </span>
-      <span class="pdps">${fmt(p.dps)}</span>
-      <span class="ppct">${pct}</span>
-      <span class="pcrit">${crit}</span>
-    </div>`;
+    const color=DPS_COLORS[i%DPS_COLORS.length];
+    const barW=topDps>0?Math.max(1,Math.round(p.dps/topDps*100)):0;
+    const kr=jobFromCode(p.jobCode);
+    const crit=p.critRate>0?Math.round(p.critRate*100)+'%':'-';
+    const pct=p.damagePercent>0?p.damagePercent.toFixed(1)+'%':'-';
+    html+=`<div class="dps-row" data-eid="${p.entityId}">`;
+    html+=`<div class="dps-bar" style="width:${barW}%;background:${color}"></div>`;
+    html+=`<span class="dps-rank">${i+1}</span>`;
+    html+=jobIconHtml(kr||'?', 20).replace('job-icon','dps-job');
+    html+=`<span class="dps-name">${esc(p.name)}</span>`;
+    html+=`<span class="dps-val">${fmt(p.dps)}</span>`;
+    html+=`<span class="dps-pct">${pct}</span>`;
+    html+=`<span class="dps-crit">${crit}</span>`;
+    html+=`</div>`;
   });
-  rows.innerHTML=html;
-  rows.querySelectorAll('.dps-row').forEach(r=>{
-    r.addEventListener('mousedown',e=>{e.stopPropagation();});
+  list.innerHTML=html;
+
+  list.querySelectorAll('.dps-row').forEach(r=>{
+    r.addEventListener('mousedown',e=>e.stopPropagation());
     r.addEventListener('click',e=>{
       e.stopPropagation();
-      const eid=parseInt(r.dataset.eid,10);
-      send('dps-detail-pin',{entityId:eid,maskNick:false});
+      send('dps-detail-pin',{entityId:parseInt(r.dataset.eid,10),maskNick:false});
     });
   });
+
   // compact
   if(sorted[0]){
-    document.getElementById('compact-dps').textContent=fmt(sorted[0].dps)+' DPS';
-    document.getElementById('compact-name').textContent=sorted[0].name;
+    document.getElementById('c-dps').textContent=fmt(sorted[0].dps);
   }
 }
 
-// --- Render Party ---
-function renderParty(){
-  const rows = document.getElementById('party-rows');
-  const empty = document.getElementById('party-empty');
-  if(!state.party||state.party.length===0){
-    empty.style.display='flex'; rows.innerHTML=''; rows.appendChild(empty); return;
-  }
-  empty.style.display='none';
-  let html='';
-  state.party.forEach(p=>{
-    const name=p.split(':')[0];
-    html+=`<div class="party-row"><span class="party-dot"></span><span class="party-name">${esc(name)}</span></div>`;
-  });
-  rows.innerHTML=html;
-}
-
-// --- Status bar ---
-function renderStatus(){
-  const ping=document.getElementById('stat-ping');
-  ping.textContent=state.ping<0?'-':state.ping+'ms';
-  ping.style.color=state.ping>100?'#ff7777':state.ping>50?'#ffcc44':'';
-
-  const tw=document.getElementById('stat-time-wrap');
-  const tt=document.getElementById('stat-target-wrap');
-  if(state.players&&state.players.length>0){
-    tw.style.display='flex';
-    document.getElementById('stat-time').textContent=fmtTime(state.elapsed);
-    if(state.target&&state.target.name){
-      tt.style.display='flex';
-      document.getElementById('stat-target').textContent=state.target.name;
-    } else tt.style.display='none';
-  } else { tw.style.display='none'; tt.style.display='none'; }
-
-  const ss=document.getElementById('sniffer-status');
-  ss.textContent=state.snifferMsg;
-  ss.className=state.snifferError?'error':'';
-}
-
-// --- Tab switch ---
+// ── Tab switch ────────────────────────────────────
 function switchTab(tab){
   state.tab=tab;
+  document.getElementById('lookup-pane').classList.toggle('active',tab==='lookup');
   document.getElementById('dps-pane').classList.toggle('active',tab==='dps');
-  document.getElementById('party-pane').classList.toggle('active',tab==='party');
-  document.getElementById('tab-dps').classList.toggle('active',tab==='dps');
-  document.getElementById('tab-party').classList.toggle('active',tab==='party');
-  send('set-active-tab',tab);
+  document.getElementById('tab-lookup').className='tabx'+(tab==='lookup'?' active-lookup':'');
+  document.getElementById('tab-dps').className='tabx'+(tab==='dps'?' active-dps':'');
+  send('set-active-tab',tab==='dps'?'dps':'party');
 }
 window.switchTab=switchTab;
 
-// --- Messages from C# ---
+// ── Messages from C# ──────────────────────────────
 function onMessage(e){
   let msg;
   try{ msg=typeof e.data==='string'?JSON.parse(e.data):e.data; }catch(ex){ return; }
   const {type,data}=msg;
+
   switch(type){
     case 'dps-update':
-      state.players=data.players||[];
+      state.dpsPlayers=data.players||[];
       state.elapsed=data.elapsedSeconds||0;
+      state.wallElapsed=data.wallElapsedSeconds||0;
       state.target=data.target||null;
-      renderDps(); renderStatus(); break;
+      // sync combat power from known party data into dps players
+      state.dpsPlayers.forEach(p=>{
+        const key=`${p.name}:${p.serverId}`;
+        if(state.partyMap[key]?.cp) p.combatPower=state.partyMap[key].cp;
+      });
+      renderDps();
+      break;
+
     case 'party-sync':
-      state.party=data||[];
-      renderParty(); break;
+      // data: string[] "nickname:serverId"
+      const newKeys=data||[];
+      // keep existing entries, add new ones
+      const prevMap={...state.partyMap};
+      state.partyMap={};
+      newKeys.forEach(key=>{
+        const [nick,sid]=key.split(':');
+        if(prevMap[key]) state.partyMap[key]=prevMap[key];
+        else state.partyMap[key]={nickname:nick,serverId:parseInt(sid)||0,serverName:'',loading:true,error:false,cp:0,className:null};
+      });
+      state.partyOrder=newKeys;
+      renderLookup();
+      break;
+
     case 'party-clear':
-      state.party=[];
-      renderParty(); break;
+      state.partyMap={};
+      state.partyOrder=[];
+      renderLookup();
+      break;
+
+    case 'character':
+      // {nickname, server_id, server_name, type, loading, error, score:{combatPower,class,...}}
+      if(!data||!data.nickname) break;
+      const ckey=`${data.nickname}:${data.server_id}`;
+      if(!state.partyMap[ckey]){
+        state.partyMap[ckey]={nickname:data.nickname,serverId:data.server_id,serverName:data.server_name||'',loading:false,error:false,cp:0,className:null};
+        if(!state.partyOrder.includes(ckey)) state.partyOrder.push(ckey);
+      }
+      const entry=state.partyMap[ckey];
+      entry.serverName=data.server_name||entry.serverName||'';
+      entry.loading=data.loading===true;
+      entry.error=data.error===true;
+      if(data.score){
+        entry.cp=data.score.combatPower||0;
+        entry.className=data.score.class||null;
+      }
+      if(data.type==='self_login'||data.type==='self'){
+        state.selfKey=ckey;
+        state.selfName=data.nickname;
+        renderStatus();
+      }
+      renderLookup();
+      break;
+
     case 'ping-update':
       state.ping=data;
-      renderStatus(); break;
+      renderStatus();
+      break;
+
     case 'sniffer-error':
+      state.snifferErr=true;
       state.snifferMsg=data||'오류';
-      state.snifferError=true;
-      renderStatus(); break;
+      renderStatus();
+      break;
+
     case 'preload-done':
+      state.snifferOk=true;
+      state.snifferErr=false;
       state.snifferMsg='패킷 캡처 중';
-      state.snifferError=false;
-      renderStatus(); break;
+      renderStatus();
+      break;
+
     case 'status':
-      if(data&&data.text){
+      if(data?.text){
         state.snifferMsg=data.text;
-        state.snifferError=false;
-        renderStatus();
-      } break;
+        state.snifferErr=false;
+        if(data.type==='active') state.snifferOk=true;
+      }
+      renderStatus();
+      break;
+
     case 'toggle-compact':
       state.compact=!state.compact;
       document.getElementById('app').classList.toggle('compact',state.compact);
-      send('set-compact',state.compact); break;
+      send('set-compact',state.compact);
+      break;
+
     case 'switch-tab':
-      switchTab(state.tab==='dps'?'party':'dps'); break;
-    case 'clear-shortcut':
-      state.players=[];
-      renderDps(); renderStatus(); break;
+      switchTab(state.tab==='lookup'?'dps':'lookup');
+      break;
+
     case 'combat-started':
-      state.players=[];
-      renderDps(); break;
+      state.dpsPlayers=[];
+      state.elapsed=0;
+      renderDps();
+      break;
+
+    case 'clear-shortcut':
+      state.dpsPlayers=[];
+      state.elapsed=0;
+      renderDps();
+      break;
+
     case 'settings-sync':
       break;
-    case 'theme-changed': case 'shortcuts-updated':
-    case 'overlay-only-changed': case 'tracked-skills-updated':
-    case 'char-data': case 'combat-record-saved':
+
+    case 'theme-changed':case 'shortcuts-updated':
+    case 'overlay-only-changed':case 'tracked-skills-updated':
+    case 'combat-record-saved':
       break;
   }
 }
 
-if(window.chrome&&window.chrome.webview){
+if(window.chrome&&window.chrome.webview)
   window.chrome.webview.addEventListener('message',onMessage);
+
+// ── Buttons ───────────────────────────────────────
+function noPropagate(id, fn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('mousedown',e=>e.stopPropagation());
+  el.addEventListener('click',e=>{ e.stopPropagation(); fn(e); });
 }
+noPropagate('btn-reset', ()=>send('dps-reset'));
+noPropagate('btn-settings', ()=>send('open-settings'));
+noPropagate('btn-close', ()=>send('close-window'));
+noPropagate('btn-shot', ()=>{ /* snapshot stub */ });
+noPropagate('btn-vis', ()=>{
+  const v=!state.compact;
+  state.compact=v;
+  document.getElementById('app').classList.toggle('compact',v);
+  send('set-compact',v);
+});
+noPropagate('btn-lock', ()=>{
+  state.clickLocked=!state.clickLocked;
+  document.getElementById('btn-lock').textContent=state.clickLocked?'🔒':'🔓';
+  document.getElementById('btn-lock').classList.toggle('active',state.clickLocked);
+  send('set-click-locked',state.clickLocked);
+});
 
-// --- Wire up buttons ---
-document.getElementById('btn-reset').addEventListener('mousedown',e=>e.stopPropagation());
-document.getElementById('btn-reset').addEventListener('click',e=>{e.stopPropagation();send('dps-reset');});
-document.getElementById('btn-settings').addEventListener('mousedown',e=>e.stopPropagation());
-document.getElementById('btn-settings').addEventListener('click',e=>{e.stopPropagation();send('open-settings');});
-document.getElementById('btn-close').addEventListener('mousedown',e=>e.stopPropagation());
-document.getElementById('btn-close').addEventListener('click',e=>{e.stopPropagation();send('close-window');});
+// Opacity slider
+const slider=document.getElementById('opacity-slider');
+slider.value=S.opacity||80;
+slider.addEventListener('mousedown',e=>e.stopPropagation());
+slider.addEventListener('input',()=>{
+  send('set-opacity',parseInt(slider.value,10));
+});
 
-// --- Drag ---
-const titlebar = document.getElementById('titlebar');
-titlebar.addEventListener('mousedown',e=>{
-  if(e.target.tagName==='BUTTON') return;
+// Drag
+document.getElementById('tb').addEventListener('mousedown',e=>{
+  if(e.target.tagName==='BUTTON'||e.target.tagName==='INPUT') return;
+  send('drag-start');
+});
+document.getElementById('compact-bar').addEventListener('mousedown',e=>{
   send('drag-start');
 });
 
-// --- Resize ---
+// Resize handles
 document.querySelectorAll('[data-dir]').forEach(el=>{
-  el.addEventListener('mousedown',e=>{
-    e.stopPropagation();
-    send('resize-start',el.dataset.dir);
-  });
+  el.addEventListener('mousedown',e=>{ e.stopPropagation(); send('resize-start',el.dataset.dir); });
 });
 
-// --- Global mouseup ---
+// Global mouseup
 window.addEventListener('mouseup',()=>send('mouse-up'));
 
-// --- Escape helper ---
-function esc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+// ── Init ─────────────────────────────────────────
+document.getElementById('brand-ver').textContent='v'+state.version;
+if(S.opacity) slider.value=S.opacity;
 
-// --- Initial render ---
-renderDps(); renderParty(); renderStatus();
+// init sort
+setSort(2);
 
-// --- Signal ready ---
+// initial render
+renderStatus();
+renderLookup();
+renderDps();
+
 send('ui-ready');
 })();
 </script>
