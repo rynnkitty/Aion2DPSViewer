@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'LINE Seed Sans KR'; font-weight: 400; src: url('https://a2viewer.local/fonts/LINESeedKR-Rg.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'LINE Seed Sans KR'; font-weight: 700; src: url('https://a2viewer.local/fonts/LINESeedKR-Bd.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Orbit'; font-weight: 400; src: url('https://a2viewer.local/fonts/Orbit-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Gmarket Sans'; font-weight: 500; src: url('https://a2viewer.local/fonts/GmarketSans-Medium.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Gmarket Sans'; font-weight: 700; src: url('https://a2viewer.local/fonts/GmarketSans-Bold.woff2') format('woff2'); font-display: swap; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 11px; }
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  font-size: 1rem;
+  color: #ccc;
+  background: #10142a;
+  overflow-y: auto;
+  overflow-x: hidden;
+  user-select: none;
+}
+body::-webkit-scrollbar { width: 3px; }
+body::-webkit-scrollbar-track { background: transparent; }
+body::-webkit-scrollbar-thumb { background: rgba(100,160,255,0.25); border-radius: 2px; }
+
+.container {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100vh;
+}
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #7ab4ff;
+  letter-spacing: 1px;
+}
+.close-btn {
+  width: 22px; height: 22px;
+  border: none; border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  color: #888; font-size: 14px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.close-btn:hover { background: rgba(224,64,64,0.3); color: #e04040; }
+.section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-title {
+  font-size: 10px;
+  font-weight: bold;
+  color: #7ab4ff;
+  letter-spacing: 0.5px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.row label {
+  font-size: 11px;
+  color: #aaa;
+  flex: 1;
+  min-width: 0;
+}
+.hint {
+  display: block;
+  font-size: 9px;
+  color: #666;
+  margin-top: 1px;
+}
+select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ccc;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+}
+select option {
+  background: #1e1e2e;
+  color: #ccc;
+}
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #666;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 42px;
+  text-align: center;
+  transition: all 0.15s;
+}
+.toggle-btn.on {
+  background: rgba(80, 200, 120, 0.2);
+  border-color: rgba(80, 200, 120, 0.4);
+  color: #5cc88a;
+}
+.shortcut-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ddd;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 90px;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.shortcut-btn:hover { border-color: rgba(100, 160, 255, 0.4); }
+.shortcut-btn.recording {
+  border-color: #ffd060;
+  color: #ffd060;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.job-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.job-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #888;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.job-btn:hover { border-color: rgba(100, 160, 255, 0.3); color: #aaa; }
+.job-btn.active { border-color: rgba(100, 160, 255, 0.5); color: #7ab4ff; background: rgba(100, 160, 255, 0.1); }
+.job-btn.has-tracked { color: #aaa; }
+.job-btn-count {
+  font-size: 8px;
+  background: rgba(100, 160, 255, 0.3);
+  color: #7ab4ff;
+  border-radius: 6px;
+  padding: 0 4px;
+  margin-left: 3px;
+  font-weight: bold;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-overlay.hidden { display: none; }
+.modal {
+  background: #1a1a2e;
+  border: 1px solid rgba(100, 160, 255, 0.25);
+  border-radius: 8px;
+  padding: 14px 16px;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal.report-modal {
+  border-color: rgba(255, 100, 100, 0.25);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7ab4ff;
+}
+.modal.report-modal .modal-title { color: #f88; }
+.modal-actions-top {
+  display: flex;
+  gap: 4px;
+}
+.skill-select-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.skill-select-btn:hover { border-color: rgba(100, 160, 255, 0.3); color: #aaa; }
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.skill-list::-webkit-scrollbar { width: 3px; }
+.skill-list::-webkit-scrollbar-thumb { background: rgba(100,160,255,0.25); border-radius: 2px; }
+.skill-empty {
+  font-size: 9px;
+  color: #555;
+  text-align: center;
+  padding: 6px 0;
+}
+.skill-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #aaa;
+  cursor: pointer;
+}
+.skill-checkbox input[type="checkbox"] {
+  width: 12px;
+  height: 12px;
+  accent-color: #7ab4ff;
+  cursor: pointer;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.modal-close-btn {
+  padding: 5px 14px;
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(100, 160, 255, 0.1);
+  color: #7ab4ff;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modal-close-btn:hover { background: rgba(100, 160, 255, 0.2); color: #9ac4ff; }
+.report-textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ccc;
+  font-size: 11px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  max-height: 120px;
+  box-sizing: border-box;
+}
+.report-textarea::placeholder { color: #666; }
+.report-textarea:focus { outline: none; border-color: rgba(255, 100, 100, 0.4); }
+.report-send-btn {
+  padding: 5px 14px;
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 60, 60, 0.15);
+  color: #f88;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.report-send-btn:hover { background: rgba(255, 60, 60, 0.3); color: #faa; }
+.report-send-btn:disabled { opacity: 0.5; cursor: default; }
+.report-cancel-btn {
+  padding: 5px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.report-cancel-btn:hover { background: rgba(255, 255, 255, 0.12); color: #aaa; }
+.report-btn {
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 60, 60, 0.1);
+  color: #f88;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.report-btn:hover { background: rgba(255, 60, 60, 0.25); color: #faa; }
+.link-btn {
+  padding: 3px 10px;
+  border: 1px solid rgba(100, 160, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(100, 160, 255, 0.1);
+  color: #7ab4ff;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.link-btn:hover { background: rgba(100, 160, 255, 0.2); }
+.guide-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #888;
+  background: transparent;
+  color: #aaa;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 0;
+  line-height: 1;
+  vertical-align: middle;
+}
+.guide-btn:hover { color: #ccc; border-color: #aaa; }
+.scale-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.scale-slider {
+  -webkit-appearance: none;
+  width: 80px;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.scale-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7ab4ff;
+  cursor: pointer;
+}
+.scale-slider::-webkit-slider-thumb:hover { background: #a0cbff; }
+.scale-value {
+  font-size: 10px;
+  color: #7ab4ff;
+  min-width: 30px;
+  text-align: right;
+}
+/* ── 테마 ── */
+.theme-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
+.theme-card {
+  padding: 6px 4px; border-radius: 4px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: all 0.15s;
+}
+.theme-card.active { border-color: #7ab4ff; background: rgba(122,180,255,0.15); }
+.theme-preview {
+  width: 100%; height: 16px; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center; gap: 2px; padding: 0 4px;
+}
+.theme-name { font-size: 9px; }
+.theme-detail-toggle {
+  width: 100%; padding: 4px 0; background: none; border: none;
+  color: #555; font-size: 9px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.theme-detail { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.theme-detail.hidden { display: none; }
+.theme-sub {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 4px; padding: 6px 6px; margin-bottom: 6px;
+}
+.theme-sub-title { font-size: 9px; color: #555; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.color-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.color-row .cr-label { font-size: 10px; color: #8899aa; min-width: 44px; flex-shrink: 0; }
+.cr-swatch {
+  width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px; cursor: pointer; flex-shrink: 0;
+}
+.color-row .cr-hex {
+  flex: 1; min-width: 0; font-size: 9px; font-family: monospace;
+  color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* 커스텀 컬러피커 모달 */
+.cp-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+}
+.cp-modal {
+  background: #1a1e30; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 12px; width: 220px;
+}
+.cp-sv-area {
+  position: relative; width: 100%; height: 140px; border-radius: 4px; cursor: crosshair;
+  margin-bottom: 8px; overflow: hidden;
+}
+.cp-sv-area .cp-white { position:absolute;inset:0;background:linear-gradient(to right,#fff,transparent); }
+.cp-sv-area .cp-black { position:absolute;inset:0;background:linear-gradient(to top,#000,transparent); }
+.cp-sv-cursor {
+  position: absolute; width: 10px; height: 10px; border: 2px solid #fff;
+  border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.8);
+  pointer-events: none; transform: translate(-50%,-50%);
+}
+.cp-hue-bar {
+  width: 100%; height: 14px; border-radius: 3px; cursor: crosshair; margin-bottom: 8px;
+  background: linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+}
+.cp-hue-bar .cp-hue-cursor {
+  position: relative; width: 4px; height: 100%; background: #fff;
+  border: 1px solid #333; border-radius: 1px; pointer-events: none; top: 0;
+}
+.cp-bottom { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+.cp-preview { width: 28px; height: 28px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
+.cp-hex {
+  flex: 1; font-size: 12px; font-family: monospace; padding: 4px 6px;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; color: #ccc; outline: none;
+}
+.cp-actions { display: flex; gap: 6px; }
+.cp-actions button { flex: 1; padding: 5px 0; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; }
+.cp-save { background: rgba(100,160,255,0.25); color: #7ab4ff; }
+.cp-save:hover { background: rgba(100,160,255,0.4); }
+.cp-cancel { background: rgba(255,255,255,0.06); color: #888; }
+.cp-cancel:hover { background: rgba(255,255,255,0.12); }
+.theme-reset-btn {
+  padding: 4px 8px; font-size: 10px; cursor: pointer;
+  background: rgba(224,64,64,0.15); border: 1px solid rgba(224,64,64,0.3);
+  border-radius: 4px; color: #e04040;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.save-btn {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: rgba(100, 160, 255, 0.25);
+  color: #7ab4ff;
+}
+.save-btn:hover { background: rgba(100, 160, 255, 0.4); }
+.cancel-btn {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  color: #888;
+}
+.cancel-btn:hover { background: rgba(255, 255, 255, 0.12); color: #aaa; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="title-bar">
+    <div class="title">설정</div>
+    <button class="close-btn" onclick="cancel()" title="닫기">&times;</button>
+  </div>
+
+  <!-- 테마 -->
+  <div class="section">
+    <div class="section-title">테마</div>
+    <div class="theme-grid" id="themeGrid"></div>
+    <button class="theme-detail-toggle" onclick="toggleThemeDetail()">
+      <span id="themeDetailArrow" style="font-size:8px;transform:rotate(90deg);display:inline-block">▶</span> 세부 설정
+    </button>
+    <div class="theme-detail" id="themeDetail"></div>
+  </div>
+
+  <!-- 조회 -->
+  <div class="section">
+    <div class="section-title">조회</div>
+    <div class="section-title">스티그마 스킬 표시</div>
+    <div class="job-buttons" id="jobButtons"></div>
+  </div>
+
+  <!-- DPS -->
+  <div class="section">
+    <div class="section-title">DPS</div>
+    <div class="row">
+      <label>DPS 비율</label>
+      <select id="dpsPercentMode">
+        <option value="party">파티 기여도</option>
+        <option value="boss">보스 HP 대비</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 공용 -->
+  <div class="section">
+    <div class="section-title">공용</div>
+    <div class="row">
+      <label>점수 포맷</label>
+      <select id="scoreFormat">
+        <option value="full">숫자 전체</option>
+        <option value="short">축약 (K/M)</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>아이온2 활성화 시에만 표시</label>
+      <button class="toggle-btn" id="overlayOnly" onclick="toggleOverlayOnly()">OFF</button>
+    </div>
+    <div class="row">
+      <label>탭 자동전환</label>
+      <button class="toggle-btn" id="autoTabSwitch" onclick="toggleAutoTab()">OFF</button>
+    </div>
+    <div class="row">
+      <label>GPU 모드<span class="hint">게임 프레임 드랍 시 변경해 보세요</span></label>
+      <select id="gpuMode" onchange="changeGpuMode(this.value)">
+        <option value="off">GPU 비활성화</option>
+        <option value="compositing-off">합성만 비활성화</option>
+        <option value="on">GPU 가속 사용</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>웹 연동 기기등록<button class="guide-btn" onclick="window.open('https://a2viewer.co.kr/guide','_blank')">?</button><span class="hint">전투 기록을 웹에서 조회</span></label>
+      <button class="link-btn" id="copyLinkBtn" onclick="copyLink()">링크 복사</button>
+    </div>
+  </div>
+
+  <!-- 단축키 -->
+  <div class="section">
+    <div class="section-title">단축키</div>
+    <div class="row">
+      <label>새로고침</label>
+      <button class="shortcut-btn" id="shortcutRefresh" onclick="startRecording('refresh')">없음</button>
+    </div>
+    <div class="row">
+      <label>숨기기/보이기</label>
+      <button class="shortcut-btn" id="shortcutToggle" onclick="startRecording('toggle')">없음</button>
+    </div>
+    <div class="row">
+      <label>카드만 보기</label>
+      <button class="shortcut-btn" id="shortcutCompact" onclick="startRecording('compact')">없음</button>
+    </div>
+    <div class="row">
+      <label>탭 전환</label>
+      <button class="shortcut-btn" id="shortcutSwitchTab" onclick="startRecording('switchTab')">없음</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <label>에러 리포트</label>
+    <button class="report-btn" onclick="showReportModal()">로그 전송</button>
+  </div>
+
+  <div class="actions">
+    <button class="save-btn" onclick="save()">저장</button>
+    <button class="cancel-btn" onclick="cancel()">취소</button>
+  </div>
+</div>
+
+<!-- 스킬 모달 -->
+<div class="modal-overlay hidden" id="skillOverlay" onclick="closeSkillModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="skillModalTitle"></div>
+      <div class="modal-actions-top" id="skillModalTopActions"></div>
+    </div>
+    <div class="skill-list" id="skillList"></div>
+    <div class="modal-actions">
+      <button class="modal-close-btn" onclick="closeSkillModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 에러 리포트 모달 -->
+<div class="modal-overlay hidden" id="reportOverlay" onclick="closeReportModal()">
+  <div class="modal report-modal" onclick="event.stopPropagation()">
+    <div class="modal-title">에러 리포트</div>
+    <textarea class="report-textarea" id="reportText" placeholder="증상을 입력하세요 (선택사항)" rows="4"></textarea>
+    <div class="modal-actions">
+      <button class="report-send-btn" id="reportSendBtn" onclick="sendReport()">전송</button>
+      <button class="report-cancel-btn" onclick="closeReportModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MODIFIER_KEYS = new Set(['Control', 'Alt', 'Shift', 'Meta']);
+const ALL_JOBS = ['검성','궁성','마도성','살성','수호성','정령성','치유성','호법성'];
+
+// State
+const S = window.__SETTINGS__ || {};
+let state = {
+  refresh: (S.shortcuts||{}).refresh || '',
+  toggle: (S.shortcuts||{}).toggle || '',
+  compact: (S.shortcuts||{}).compact || '',
+  switchTab: (S.shortcuts||{}).switchTab || '',
+  overlayOnly: S.overlayOnly ?? true,
+  textScale: S.textScale ?? 100,
+  fontScale: S.fontScale ?? 100,
+  trackedSkills: S.trackedSkills ? JSON.parse(JSON.stringify(S.trackedSkills)) : {},
+  autoTabSwitch: S.autoTabSwitch ?? true,
+  uploaderId: S.uploaderId || '',
+  dpsPercentMode: S.dpsPercentMode || 'party',
+  scoreFormat: S.scoreFormat || 'full',
+  dpsTimeMode: 'wallclock',
+  gpuMode: S.gpuMode || 'off',
+};
+const knownDpSkills = S.knownDpSkills || {};
+let recording = null;
+let popupJob = null;
+
+function msg(obj) {
+  window.chrome.webview.postMessage(JSON.stringify(obj));
+}
+
+// Init UI
+function init() {
+  // selects
+  document.getElementById('dpsPercentMode').value = state.dpsPercentMode;
+  document.getElementById('scoreFormat').value = state.scoreFormat;
+
+  // toggles
+  updateToggle('overlayOnly', state.overlayOnly);
+  updateToggle('autoTabSwitch', state.autoTabSwitch);
+  document.getElementById('gpuMode').value = state.gpuMode;
+
+  // scale — 테마 세부설정 패널에서 렌더링됨 (renderThemeDetail)
+
+  // shortcuts
+  updateShortcutBtn('shortcutRefresh', state.refresh);
+  updateShortcutBtn('shortcutToggle', state.toggle);
+  updateShortcutBtn('shortcutCompact', state.compact);
+  updateShortcutBtn('shortcutSwitchTab', state.switchTab);
+
+  // job buttons
+  renderJobButtons();
+
+  // event listeners
+  document.getElementById('dpsPercentMode').onchange = function() { state.dpsPercentMode = this.value; };
+  document.getElementById('scoreFormat').onchange = function() { state.scoreFormat = this.value; };
+  // textScale/fontScale oninput — 테마 세부설정 패널에서 인라인 처리
+}
+
+function updateToggle(id, on) {
+  var el = document.getElementById(id);
+  el.textContent = on ? 'ON' : 'OFF';
+  el.className = 'toggle-btn' + (on ? ' on' : '');
+}
+
+function toggleOverlayOnly() {
+  state.overlayOnly = !state.overlayOnly;
+  updateToggle('overlayOnly', state.overlayOnly);
+}
+function toggleAutoTab() {
+  state.autoTabSwitch = !state.autoTabSwitch;
+  updateToggle('autoTabSwitch', state.autoTabSwitch);
+}
+function changeGpuMode(val) {
+  state.gpuMode = val;
+}
+
+function copyLink() {
+  if (!state.uploaderId) return;
+  var url = 'https://a2viewer.co.kr/link#uid=' + state.uploaderId;
+  msg({type:'copy-to-clipboard', data: url});
+  var btn = document.getElementById('copyLinkBtn');
+  btn.textContent = '복사됨!';
+  setTimeout(function() { btn.textContent = '링크 복사'; }, 2000);
+}
+
+// Shortcuts
+function updateShortcutBtn(id, value) {
+  var el = document.getElementById(id);
+  el.textContent = value || '없음';
+  el.className = 'shortcut-btn';
+}
+
+function startRecording(key) {
+  if (recording === key) {
+    recording = null;
+    var map = {refresh:'shortcutRefresh', toggle:'shortcutToggle', compact:'shortcutCompact', switchTab:'shortcutSwitchTab'};
+    var el = document.getElementById(map[key]);
+    el.textContent = state[key] || '없음';
+    el.className = 'shortcut-btn';
+    msg({type:'resume-shortcuts'});
+    return;
+  }
+  // stop previous
+  if (recording) {
+    var prevMap = {refresh:'shortcutRefresh', toggle:'shortcutToggle', compact:'shortcutCompact', switchTab:'shortcutSwitchTab'};
+    var prev = document.getElementById(prevMap[recording]);
+    prev.textContent = state[recording] || '없음';
+    prev.className = 'shortcut-btn';
+  }
+  recording = key;
+  msg({type:'suspend-shortcuts'});
+  var map2 = {refresh:'shortcutRefresh', toggle:'shortcutToggle', compact:'shortcutCompact', switchTab:'shortcutSwitchTab'};
+  var el2 = document.getElementById(map2[key]);
+  el2.textContent = '키 입력… (ESC=해제)';
+  el2.className = 'shortcut-btn recording';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (!recording) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (e.key === 'Escape' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+    state[recording] = '';
+    var map = {refresh:'shortcutRefresh', toggle:'shortcutToggle', compact:'shortcutCompact', switchTab:'shortcutSwitchTab'};
+    updateShortcutBtn(map[recording], '');
+    recording = null;
+    msg({type:'resume-shortcuts'});
+    return;
+  }
+
+  if (MODIFIER_KEYS.has(e.key)) return;
+
+  var parts = [];
+  if (e.ctrlKey) parts.push('Ctrl');
+  if (e.altKey) parts.push('Alt');
+  if (e.shiftKey) parts.push('Shift');
+
+  var key = e.key;
+  if (key === ' ') key = 'Space';
+  else if (key === 'Enter') key = 'Return';
+  else if (key.startsWith('Arrow')) key = key.replace('Arrow', '');
+  else if (key.length === 1) key = key.toUpperCase();
+  parts.push(key);
+  var accel = parts.join('+');
+
+  state[recording] = accel;
+  var map2 = {refresh:'shortcutRefresh', toggle:'shortcutToggle', compact:'shortcutCompact', switchTab:'shortcutSwitchTab'};
+  updateShortcutBtn(map2[recording], accel);
+  recording = null;
+  msg({type:'resume-shortcuts'});
+}, true);
+
+// Job buttons & skill modal
+function renderJobButtons() {
+  var cont = document.getElementById('jobButtons');
+  cont.innerHTML = '';
+  ALL_JOBS.forEach(function(job) {
+    var btn = document.createElement('button');
+    var count = (state.trackedSkills[job] || []).length;
+    btn.className = 'job-btn' + (count > 0 ? ' has-tracked' : '');
+    btn.innerHTML = esc(job) + (count > 0 ? '<span class="job-btn-count">' + count + '</span>' : '');
+    btn.onclick = function() { openSkillModal(job); };
+    cont.appendChild(btn);
+  });
+}
+
+function openSkillModal(job) {
+  popupJob = job;
+  document.getElementById('skillModalTitle').textContent = job + ' 스티그마';
+  var skills = knownDpSkills[job] || [];
+  var topActions = document.getElementById('skillModalTopActions');
+  if (skills.length > 0) {
+    topActions.innerHTML = '<button class="skill-select-btn" onclick="selectAll()">전체선택</button><button class="skill-select-btn" onclick="deselectAll()">전체해제</button>';
+  } else {
+    topActions.innerHTML = '';
+  }
+  renderSkillList();
+  document.getElementById('skillOverlay').className = 'modal-overlay';
+}
+
+function closeSkillModal() {
+  popupJob = null;
+  document.getElementById('skillOverlay').className = 'modal-overlay hidden';
+  renderJobButtons();
+}
+
+function renderSkillList() {
+  var list = document.getElementById('skillList');
+  var skills = knownDpSkills[popupJob] || [];
+  if (skills.length === 0) {
+    list.innerHTML = '<div class="skill-empty">해당 직업 캐릭터 조회 시 스킬이 자동 등록됩니다</div>';
+    return;
+  }
+  var tracked = state.trackedSkills[popupJob] || [];
+  list.innerHTML = '';
+  skills.forEach(function(sk) {
+    var lbl = document.createElement('label');
+    lbl.className = 'skill-checkbox';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = tracked.indexOf(sk) >= 0;
+    cb.addEventListener('change', function() { toggleSkill(sk); });
+    var sp = document.createElement('span');
+    sp.textContent = sk;
+    lbl.appendChild(cb);
+    lbl.appendChild(sp);
+    list.appendChild(lbl);
+  });
+}
+
+function toggleSkill(name) {
+  if (!popupJob) return;
+  var arr = state.trackedSkills[popupJob] || [];
+  var idx = arr.indexOf(name);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push(name);
+  state.trackedSkills[popupJob] = arr;
+}
+
+function selectAll() {
+  if (!popupJob) return;
+  state.trackedSkills[popupJob] = (knownDpSkills[popupJob] || []).slice();
+  renderSkillList();
+}
+function deselectAll() {
+  if (!popupJob) return;
+  state.trackedSkills[popupJob] = [];
+  renderSkillList();
+}
+
+// Report modal
+function showReportModal() {
+  document.getElementById('reportText').value = '';
+  document.getElementById('reportSendBtn').textContent = '전송';
+  document.getElementById('reportSendBtn').disabled = false;
+  document.getElementById('reportOverlay').className = 'modal-overlay';
+}
+function closeReportModal() {
+  document.getElementById('reportOverlay').className = 'modal-overlay hidden';
+}
+function sendReport() {
+  var btn = document.getElementById('reportSendBtn');
+  btn.textContent = '전송 중...';
+  btn.disabled = true;
+  var text = document.getElementById('reportText').value.trim();
+  msg({type:'send-error-report', data: text || null});
+  setTimeout(function() {
+    btn.textContent = '전송 완료';
+    setTimeout(function() { closeReportModal(); }, 1000);
+  }, 1500);
+}
+
+// Save / Cancel
+function save() {
+  msg({
+    type: 'settings-save',
+    data: {
+      refresh: state.refresh,
+      toggle: state.toggle,
+      compact: state.compact,
+      switchTab: state.switchTab,
+      overlayOnly: state.overlayOnly,
+      textScale: state.textScale,
+      fontScale: state.fontScale,
+      trackedSkills: state.trackedSkills,
+      showParty: true,
+      showSelf: true,
+      autoTabSwitch: state.autoTabSwitch,
+      dpsPercentMode: state.dpsPercentMode,
+      scoreFormat: state.scoreFormat,
+      dpsTimeMode: state.dpsTimeMode,
+      gpuMode: state.gpuMode,
+    }
+  });
+}
+function cancel() {
+  msg({type:'settings-close'});
+}
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ═══════════════════════════════════════════
+// 테마 시스템
+// ═══════════════════════════════════════════
+var THEME_STORAGE = 'a2viewer-overlay-theme';
+var THEME_PRESETS = {
+  midnight: { name:'다크 블루', vars:{'--bg-app-rgb':'8, 10, 18','--bg-titlebar-rgb':'20, 35, 70','--accent':'#7ab4ff','--accent-dim':'#5a8abf','--accent-rgb':'122, 180, 255','--text-primary':'#e0e0e0','--text-bright':'#c8e0ff','--text-secondary':'#8899aa','--text-muted':'#555','--gold':'#ffd060','--gold-rgb':'255, 208, 96','--name-asmo':'#b070dd','--name-elyos':'#70c8ff','--border-accent-rgb':'100, 160, 255','--green':'#5cc88a','--green-rgb':'80, 200, 120','--red':'#e04040','--red-rgb':'224, 64, 64','--orange':'#f0a000','--border-radius':'5px'}},
+  abyss: { name:'딥 퍼플', vars:{'--bg-app-rgb':'6, 5, 16','--bg-titlebar-rgb':'30, 20, 55','--accent':'#9b7aff','--accent-dim':'#7a5abf','--accent-rgb':'155, 122, 255','--text-primary':'#d8d0e8','--text-bright':'#d0c0f0','--text-secondary':'#8878aa','--text-muted':'#504568','--gold':'#e0c060','--gold-rgb':'224, 192, 96','--name-asmo':'#c080ee','--name-elyos':'#80a8ff','--border-accent-rgb':'120, 100, 220','--green':'#60c890','--green-rgb':'96, 200, 144','--red':'#d04050','--red-rgb':'208, 64, 80','--orange':'#d0a020','--border-radius':'5px'}},
+  deva: { name:'스카이 블루', vars:{'--bg-app-rgb':'8, 14, 24','--bg-titlebar-rgb':'15, 30, 60','--accent':'#60c0ff','--accent-dim':'#4090c0','--accent-rgb':'96, 192, 255','--text-primary':'#d0e0f0','--text-bright':'#c0d8ff','--text-secondary':'#7090b0','--text-muted':'#405060','--gold':'#f0d060','--gold-rgb':'240, 208, 96','--name-asmo':'#a070c8','--name-elyos':'#80d0ff','--border-accent-rgb':'80, 150, 240','--green':'#50c880','--green-rgb':'80, 200, 128','--red':'#e05050','--red-rgb':'224, 80, 80','--orange':'#e0a030','--border-radius':'5px'}},
+  asmodian: { name:'로즈 퍼플', vars:{'--bg-app-rgb':'16, 8, 14','--bg-titlebar-rgb':'40, 18, 35','--accent':'#c070dd','--accent-dim':'#9050a0','--accent-rgb':'192, 112, 221','--text-primary':'#e0d0e0','--text-bright':'#e0c8f0','--text-secondary':'#a080a0','--text-muted':'#604860','--gold':'#e0c060','--gold-rgb':'224, 192, 96','--name-asmo':'#d080f0','--name-elyos':'#70b0e0','--border-accent-rgb':'160, 100, 180','--green':'#60c880','--green-rgb':'96, 200, 128','--red':'#e04050','--red-rgb':'224, 64, 80','--orange':'#d09030','--border-radius':'5px'}},
+  flame: { name:'웜 오렌지', vars:{'--bg-app-rgb':'16, 8, 6','--bg-titlebar-rgb':'50, 25, 15','--accent':'#e08040','--accent-dim':'#b06030','--accent-rgb':'224, 128, 64','--text-primary':'#f0e0d0','--text-bright':'#ffe0c0','--text-secondary':'#a08070','--text-muted':'#604840','--gold':'#ffc040','--gold-rgb':'255, 192, 64','--name-asmo':'#c080c0','--name-elyos':'#70b0d0','--border-accent-rgb':'200, 120, 60','--green':'#70c070','--green-rgb':'112, 192, 112','--red':'#e05040','--red-rgb':'224, 80, 64','--orange':'#f0a030','--border-radius':'5px'}},
+  glass: { name:'글래스', vars:{'--bg-app-rgb':'0, 0, 0','--bg-titlebar-rgb':'0, 0, 0','--accent':'#7ab4ff','--accent-dim':'#5a8abf','--accent-rgb':'122, 180, 255','--text-primary':'#ffffff','--text-bright':'#e0f0ff','--text-secondary':'#a0a8b8','--text-muted':'#606878','--gold':'#ffd060','--gold-rgb':'255, 208, 96','--name-asmo':'#c080ee','--name-elyos':'#80d0ff','--border-accent-rgb':'100, 160, 255','--green':'#60d080','--green-rgb':'96, 208, 128','--red':'#f05050','--red-rgb':'240, 80, 80','--orange':'#f0a000','--border-radius':'8px'}}
+};
+var PRESET_KEYS = Object.keys(THEME_PRESETS);
+var DEFAULT_JOB_COLORS = {'검성':'#6fb8ca','궁성':'#5fae8c','마도성':'#b087e9','살성':'#97c590','수호성':'#7c9ef7','정령성':'#c86bc9','치유성':'#e7cf7d','호법성':'#e2a45a'};
+var FONT_OPTIONS = [
+  {v:"'Malgun Gothic', 'Segoe UI', sans-serif", l:'맑은 고딕 (기본)'},
+  {v:"'LINE Seed Sans KR', sans-serif", l:'LINE Seed Sans'},
+  {v:"'Orbit', sans-serif", l:'Orbit'},
+  {v:"'Gmarket Sans', sans-serif", l:'Gmarket Sans'},
+  {v:"'Pretendard', 'Malgun Gothic', sans-serif", l:'Pretendard'},
+  {v:"'Noto Sans KR', sans-serif", l:'Noto Sans KR'},
+  {v:"system-ui, sans-serif", l:'시스템 기본'}
+];
+var PALETTE = [
+  '#e04040','#e06040','#e08040','#e0a040','#e0c040','#e0e040',
+  '#80e040','#40e040','#40e080','#40e0c0','#40c0e0','#4080e0',
+  '#4040e0','#6040e0','#8040e0','#a040e0','#c040e0','#e040c0',
+  '#ffffff','#cccccc','#999999','#666666','#333333','#000000',
+  '#7ab4ff','#ffd060','#5cc88a','#b070dd','#70c8ff','#e2a45a'
+];
+
+var themeState = {preset:'midnight', customVars:{}, jobColors:JSON.parse(JSON.stringify(DEFAULT_JOB_COLORS)), fontFamily:FONT_OPTIONS[0].v};
+// C#에서 주입한 __THEME__ 사용 (localStorage는 WebView2 인스턴스별로 분리되므로 사용 불가)
+try { if(window.__THEME__) themeState = window.__THEME__; } catch(e){}
+
+// 색상 유틸
+function hexToRgb(h){h=h.replace('#','');return parseInt(h.substring(0,2),16)+', '+parseInt(h.substring(2,4),16)+', '+parseInt(h.substring(4,6),16);}
+function rgbToHex(r){var p=r.split(',').map(function(s){return parseInt(s.trim())});return '#'+p.map(function(v){return v.toString(16).padStart(2,'0')}).join('');}
+function hsvToHex(h,s,v){var c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c,r1,g1,b1;if(h<60){r1=c;g1=x;b1=0}else if(h<120){r1=x;g1=c;b1=0}else if(h<180){r1=0;g1=c;b1=x}else if(h<240){r1=0;g1=x;b1=c}else if(h<300){r1=x;g1=0;b1=c}else{r1=c;g1=0;b1=x}function toH(n){return Math.round((n+m)*255).toString(16).padStart(2,'0')}return '#'+toH(r1)+toH(g1)+toH(b1);}
+function hexToHsv(hex){var h=hex.replace('#',''),r=parseInt(h.substring(0,2),16)/255,g=parseInt(h.substring(2,4),16)/255,b=parseInt(h.substring(4,6),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,hu=0;if(d!==0){if(mx===r)hu=60*(((g-b)/d)%6);else if(mx===g)hu=60*((b-r)/d+2);else hu=60*((r-g)/d+4);}if(hu<0)hu+=360;return[hu,mx===0?0:d/mx,mx];}
+
+function saveThemeState(){try{localStorage.setItem(THEME_STORAGE,JSON.stringify(themeState));}catch(e){}}
+function previewScale(){msg({type:'preview-scale',data:{textScale:state.textScale,fontScale:state.fontScale}});}
+function applyThemeToOverlay(){try{msg({type:'theme-changed',data:themeState});}catch(e){}}
+
+function setThemePreset(key){
+  try{
+    themeState.preset=key;
+    themeState.customVars={};
+    themeState.jobColors=JSON.parse(JSON.stringify(DEFAULT_JOB_COLORS));
+    themeState.fontFamily=FONT_OPTIONS[0].v;
+    saveThemeState();
+    renderThemeGrid();
+    if(themeDetailOpen) renderThemeDetail();
+    applyThemeToOverlay();
+  }catch(e){console.error('setThemePreset error',e);}
+}
+
+function resetJobColors(){
+  themeState.jobColors=JSON.parse(JSON.stringify(DEFAULT_JOB_COLORS));
+  saveThemeState(); if(themeDetailOpen) renderThemeDetail(); applyThemeToOverlay();
+}
+function resetFont(){
+  themeState.fontFamily=FONT_OPTIONS[0].v;
+  saveThemeState(); if(themeDetailOpen) renderThemeDetail(); applyThemeToOverlay();
+}
+
+function setThemeVar(varName,hex){
+  try{
+    if(varName==='--accent'){
+      var rgb=hexToRgb(hex);var parts=rgb.split(',').map(function(s){return Math.max(0,parseInt(s.trim())-40)});
+      var dim='#'+parts.map(function(v){return v.toString(16).padStart(2,'0')}).join('');
+      Object.assign(themeState.customVars,{'--accent':hex,'--accent-rgb':rgb,'--accent-dim':dim});
+    } else if(varName==='--bg-app-rgb'||varName==='--bg-titlebar-rgb'||varName==='--border-accent-rgb'){
+      themeState.customVars[varName]=hexToRgb(hex);
+    } else if(varName==='--green'||varName==='--red'||varName==='--gold'){
+      themeState.customVars[varName]=hex;themeState.customVars[varName+'-rgb']=hexToRgb(hex);
+    } else {
+      themeState.customVars[varName]=hex;
+    }
+    saveThemeState(); renderThemeGrid(); applyThemeToOverlay();
+  }catch(e){console.error('setThemeVar error',e);}
+}
+
+function getActiveVars(){
+  var base=(THEME_PRESETS[themeState.preset]||THEME_PRESETS.midnight).vars;
+  return Object.assign({},base,themeState.customVars||{});
+}
+
+// 프리셋 그리드 — 인라인 onclick 사용
+function renderThemeGrid(){
+  var cont=document.getElementById('themeGrid');
+  var html='';
+  PRESET_KEYS.forEach(function(key){
+    var p=THEME_PRESETS[key];
+    var a=themeState.preset===key;
+    var hasCustom = a && Object.keys(themeState.customVars||{}).length > 0;
+    html+='<button class="theme-card'+(a?' active':'')+'" onclick="setThemePreset(\''+key+'\')">'
+      +'<div class="theme-preview" style="background:rgb('+p.vars['--bg-app-rgb']+')">'
+      +'<div style="width:50%;height:3px;border-radius:1px;background:'+p.vars['--accent']+'"></div>'
+      +'<div style="width:30%;height:3px;border-radius:1px;background:'+p.vars['--text-muted']+'"></div>'
+      +'</div><span class="theme-name" style="color:'+(a?'#7ab4ff':'#888')+'">'+p.name+(hasCustom?' *':'')+'</span>'
+      +'</button>';
+  });
+  cont.innerHTML=html;
+}
+
+var themeDetailOpen = true;
+function toggleThemeDetail(){
+  themeDetailOpen=!themeDetailOpen;
+  var el=document.getElementById('themeDetail');
+  el.className=themeDetailOpen?'theme-detail':'theme-detail hidden';
+  document.getElementById('themeDetailArrow').style.transform=themeDetailOpen?'rotate(90deg)':'none';
+  if(themeDetailOpen) renderThemeDetail();
+}
+
+function renderThemeDetail(){
+  var cont=document.getElementById('themeDetail');
+  var av=getActiveVars();
+  var bgHex=rgbToHex(av['--bg-app-rgb']),tbHex=rgbToHex(av['--bg-titlebar-rgb']),borderHex=rgbToHex(av['--border-accent-rgb']);
+  var radius=parseInt(av['--border-radius'])||5;
+
+  var html='';
+  html+='<div class="theme-sub"><div class="theme-sub-title">배경</div>';
+  html+=colorRowHtml('앱 배경','--bg-app-rgb',bgHex);
+  html+=colorRowHtml('타이틀바','--bg-titlebar-rgb',tbHex);
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">텍스트</div>';
+  html+=colorRowHtml('주 텍스트','--text-primary',av['--text-primary']);
+  html+=colorRowHtml('밝은','--text-bright',av['--text-bright']);
+  html+=colorRowHtml('보조','--text-secondary',av['--text-secondary']);
+  html+=colorRowHtml('비활성','--text-muted',av['--text-muted']);
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">강조색</div>';
+  html+=colorRowHtml('액센트','--accent',av['--accent']);
+  html+=colorRowHtml('골드','--gold',av['--gold']);
+  html+=colorRowHtml('테두리','--border-accent-rgb',borderHex);
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">진영</div>';
+  html+=colorRowHtml('마족','--name-asmo',av['--name-asmo']);
+  html+=colorRowHtml('천족','--name-elyos',av['--name-elyos']);
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">상태</div>';
+  html+=colorRowHtml('초록','--green',av['--green']);
+  html+=colorRowHtml('빨강','--red',av['--red']);
+  html+=colorRowHtml('주황','--orange',av['--orange']);
+  html+='</div>';
+  html+='<div class="theme-sub"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="theme-sub-title" style="margin-bottom:0">직업 색상</div><button class="theme-reset-btn" style="font-size:8px;padding:1px 6px" onclick="resetJobColors()">초기화</button></div>';
+  ALL_JOBS.forEach(function(job){
+    html+=colorRowHtml(job,'job:'+job,themeState.jobColors[job]||DEFAULT_JOB_COLORS[job]);
+  });
+  html+='</div>';
+  html+='<div class="theme-sub"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div class="theme-sub-title" style="margin-bottom:0">글꼴</div><button class="theme-reset-btn" style="font-size:8px;padding:1px 6px" onclick="resetFont()">초기화</button></div>';
+  html+='<select style="width:100%;margin-bottom:4px" onchange="themeState.fontFamily=this.value;saveThemeState();applyThemeToOverlay()">';
+  FONT_OPTIONS.forEach(function(f){
+    html+='<option value="'+esc(f.v)+'"'+(themeState.fontFamily===f.v?' selected':'')+'>'+esc(f.l)+'</option>';
+  });
+  html+='</select>';
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">배율</div>';
+  html+='<div class="row"><label>UI 배율</label><div class="scale-control">'
+    +'<input type="range" class="scale-slider" id="textScaleTheme" min="50" max="200" step="10" value="'+state.textScale+'" oninput="state.textScale=Number(this.value);this.nextElementSibling.textContent=this.value+\'%\';previewScale()">'
+    +'<span class="scale-value">'+state.textScale+'%</span></div></div>';
+  html+='<div class="row"><label>글씨 배율</label><div class="scale-control">'
+    +'<input type="range" class="scale-slider" id="fontScaleTheme" min="50" max="200" step="10" value="'+state.fontScale+'" oninput="state.fontScale=Number(this.value);this.nextElementSibling.textContent=this.value+\'%\';previewScale()">'
+    +'<span class="scale-value">'+state.fontScale+'%</span></div></div>';
+  html+='</div>';
+  html+='<div class="theme-sub"><div class="theme-sub-title">모서리</div>';
+  html+='<div class="row"><label>둥글기</label><div class="scale-control">'
+    +'<input type="range" class="scale-slider" min="0" max="16" step="1" value="'+radius+'" oninput="setThemeVar(\'--border-radius\',this.value+\'px\');this.nextElementSibling.textContent=this.value+\'px\'">'
+    +'<span class="scale-value">'+radius+'px</span></div></div>';
+  html+='</div>';
+  html+='<button class="theme-reset-btn" onclick="resetTheme()">기본값으로 초기화</button>';
+
+  cont.innerHTML=html;
+}
+
+// ── 커스텀 컬러 피커 (SV + Hue + 저장/취소) ──
+var cp = { varName:'', hue:0, sat:1, val:1, origHex:'', el:null };
+
+function colorRowHtml(label,varName,value){
+  var isHex=/^#[0-9a-fA-F]{6}$/i.test(value);
+  var color=isHex?value:'#888888';
+  var safeVar=varName.replace(/'/g,"\\'");
+  return '<div class="color-row">'
+    +'<span class="cr-label">'+esc(label)+'</span>'
+    +'<span class="cr-swatch" style="background:'+color+'" onclick="cpOpen(this,\''+safeVar+'\',\''+color+'\')"></span>'
+    +'<span class="cr-hex">'+esc(value)+'</span>'
+    +'</div>';
+}
+
+// --- HSV ↔ HEX 변환 ---
+function hsv2rgb(h,s,v){
+  var c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c,r,g,b;
+  if(h<60){r=c;g=x;b=0;}else if(h<120){r=x;g=c;b=0;}else if(h<180){r=0;g=c;b=x;}
+  else if(h<240){r=0;g=x;b=c;}else if(h<300){r=x;g=0;b=c;}else{r=c;g=0;b=x;}
+  return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
+}
+function rgb2hsv(r,g,b){
+  r/=255;g/=255;b/=255;
+  var mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,h=0,s=mx?d/mx:0,v=mx;
+  if(d){if(mx===r)h=((g-b)/d+6)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;}
+  return [h,s,v];
+}
+function hex2hsv(hex){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return rgb2hsv(r,g,b);
+}
+function hsv2hex(h,s,v){
+  var rgb=hsv2rgb(h,s,v);
+  return '#'+rgb.map(function(c){return ('0'+c.toString(16)).slice(-2);}).join('');
+}
+function cpCurrentHex(){ return hsv2hex(cp.hue,cp.sat,cp.val); }
+
+// --- 모달 열기 ---
+function cpOpen(swatchEl,varName,hex){
+  cp.varName=varName; cp.origHex=hex; cp.el=swatchEl;
+  var hsv=hex2hsv(hex); cp.hue=hsv[0]; cp.sat=hsv[1]; cp.val=hsv[2];
+
+  var ov=document.createElement('div');
+  ov.className='cp-overlay'; ov.id='cpOverlay';
+
+  var m=document.createElement('div');
+  m.className='cp-modal'; m.onclick=function(e){e.stopPropagation();};
+  m.innerHTML=
+    '<div class="cp-sv-area" id="cpSV">'
+      +'<div class="cp-white"></div><div class="cp-black"></div>'
+      +'<div class="cp-sv-cursor" id="cpSVCursor"></div>'
+    +'</div>'
+    +'<div class="cp-hue-bar" id="cpHue"><div class="cp-hue-cursor" id="cpHueCursor"></div></div>'
+    +'<div class="cp-bottom">'
+      +'<div class="cp-preview" id="cpPreview"></div>'
+      +'<input class="cp-hex" id="cpHex" maxlength="7" spellcheck="false">'
+    +'</div>'
+    +'<div class="cp-actions">'
+      +'<button class="cp-save" onclick="cpSave()">저장</button>'
+      +'<button class="cp-cancel" onclick="cpClose()">취소</button>'
+    +'</div>';
+  ov.appendChild(m);
+  document.body.appendChild(ov);
+  cpRender();
+  cpBindDrag();
+}
+
+function cpRender(){
+  var hex=cpCurrentHex();
+  var hueColor=hsv2hex(cp.hue,1,1);
+  document.getElementById('cpSV').style.background=hueColor;
+  var svArea=document.getElementById('cpSV');
+  var cur=document.getElementById('cpSVCursor');
+  cur.style.left=(cp.sat*100)+'%';
+  cur.style.top=((1-cp.val)*100)+'%';
+  var hueBar=document.getElementById('cpHue');
+  var hCur=document.getElementById('cpHueCursor');
+  hCur.style.left=(cp.hue/360*100)+'%';
+  document.getElementById('cpPreview').style.background=hex;
+  document.getElementById('cpHex').value=hex;
+}
+
+// --- 드래그 ---
+function cpBindDrag(){
+  var svArea=document.getElementById('cpSV');
+  var hueBar=document.getElementById('cpHue');
+
+  function svMove(e){
+    var r=svArea.getBoundingClientRect();
+    cp.sat=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+    cp.val=Math.max(0,Math.min(1,1-(e.clientY-r.top)/r.height));
+    cpRender();
+  }
+  svArea.onmousedown=function(e){e.preventDefault();svMove(e);
+    document.onmousemove=svMove;document.onmouseup=function(){document.onmousemove=null;document.onmouseup=null;};
+  };
+
+  function hueMove(e){
+    var r=hueBar.getBoundingClientRect();
+    cp.hue=Math.max(0,Math.min(359,(e.clientX-r.left)/r.width*360));
+    cpRender();
+  }
+  hueBar.onmousedown=function(e){e.preventDefault();hueMove(e);
+    document.onmousemove=hueMove;document.onmouseup=function(){document.onmousemove=null;document.onmouseup=null;};
+  };
+
+  document.getElementById('cpHex').oninput=function(){
+    var v=this.value;
+    if(/^#[0-9a-fA-F]{6}$/i.test(v)){
+      var hsv=hex2hsv(v);cp.hue=hsv[0];cp.sat=hsv[1];cp.val=hsv[2];cpRender();
+    }
+  };
+}
+
+// --- 저장/닫기 ---
+function cpSave(){
+  var hex=cpCurrentHex();
+  // 스와치 + hex 텍스트 업데이트
+  if(cp.el){
+    cp.el.style.background=hex;
+    var hexSpan=cp.el.nextElementSibling;
+    if(hexSpan) hexSpan.textContent=hex;
+  }
+  // 테마 적용
+  try{
+    if(cp.varName.indexOf('job:')===0){
+      themeState.jobColors[cp.varName.substring(4)]=hex;
+      saveThemeState();applyThemeToOverlay();
+    } else {
+      setThemeVar(cp.varName,hex);
+    }
+  }catch(e){console.error('cpSave error',e);}
+  cpClose();
+}
+
+function cpClose(){
+  var ov=document.getElementById('cpOverlay');
+  if(ov) ov.remove();
+  document.onmousemove=null;document.onmouseup=null;
+}
+
+function resetTheme(){
+  themeState={preset:'midnight',customVars:{},jobColors:JSON.parse(JSON.stringify(DEFAULT_JOB_COLORS)),fontFamily:FONT_OPTIONS[0].v};
+  saveThemeState(); renderThemeGrid(); if(themeDetailOpen) renderThemeDetail(); applyThemeToOverlay();
+}
+
+// ── 엣지 리사이즈 ──
+var _resizing = false;
+var EDGE = 6;
+document.addEventListener('mousedown', function(e) {
+  var w = document.documentElement.clientWidth;
+  var h = document.documentElement.clientHeight;
+  var dirs = [];
+  if (e.clientX < EDGE) dirs.push('left');
+  if (e.clientX > w - EDGE) dirs.push('right');
+  if (e.clientY < EDGE) dirs.push('top');
+  if (e.clientY > h - EDGE) dirs.push('bottom');
+  if (dirs.length > 0) {
+    e.preventDefault();
+    _resizing = true;
+    msg({type:'resize-start', data: dirs.join('-')});
+  }
+});
+window.addEventListener('mouseup', function() {
+  if (_resizing) { _resizing = false; msg({type:'mouse-up'}); }
+});
+document.addEventListener('mousemove', function(e) {
+  if (_resizing) return;
+  var w = document.documentElement.clientWidth;
+  var h = document.documentElement.clientHeight;
+  var l = e.clientX < EDGE, r = e.clientX > w - EDGE;
+  var t = e.clientY < EDGE, b = e.clientY > h - EDGE;
+  var c = '';
+  if ((t&&l)||(b&&r)) c='nwse-resize';
+  else if ((t&&r)||(b&&l)) c='nesw-resize';
+  else if (l||r) c='ew-resize';
+  else if (t||b) c='ns-resize';
+  document.body.style.cursor = c;
+});
+
+init();
+renderThemeGrid();
+renderThemeDetail();
+</script>
+</body>
+</html>
