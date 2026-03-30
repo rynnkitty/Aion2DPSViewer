@@ -1,4 +1,3 @@
-using Aion2DPSViewer.Api;
 using Aion2DPSViewer.Core;
 using Aion2DPSViewer.Dps;
 using Microsoft.Web.WebView2.Core;
@@ -131,36 +130,6 @@ public class WebBridge
                         string dir = data?.GetValue<string>() ?? "";
                         _form.BeginInvoke((Action)(() => _form.StartResize(dir)));
                         return;
-                    case 'h':
-                        if (str1 != "check-update")
-                            return;
-                        Task.Run((Func<Task>)(async () =>
-                        {
-                            try
-                            {
-                                UpdateInfo? update = await Updater.CheckForUpdate();
-                                _form.BeginInvoke((Action)(() =>
-                                {
-                                    if (update != null)
-                                        Reply(callId, (object)new
-                                        {
-                                            version = update.Version,
-                                            currentVersion = update.CurrentVersion,
-                                            downloadUrl = update.DownloadUrl,
-                                            releaseUrl = update.ReleaseUrl,
-                                            releaseNotes = update.ReleaseNotes,
-                                            assetName = update.AssetName
-                                        });
-                                    else
-                                        Reply(callId, null);
-                                }));
-                            }
-                            catch
-                            {
-                                _form.BeginInvoke((Action)(() => Reply(callId, null)));
-                            }
-                        }));
-                        return;
                     case 'l':
                         if (str1 != "close-window")
                             return;
@@ -210,14 +179,6 @@ public class WebBridge
                             return;
                         Reply(callId, AppSettings.Instance.TextScale);
                         return;
-                    case 'i':
-                        if (str1 != "install-update")
-                            return;
-                        string? filePath1 = data?.GetValue<string>();
-                        if (string.IsNullOrEmpty(filePath1))
-                            return;
-                        Updater.InstallUpdate(filePath1);
-                        return;
                     case 's':
                         if (str1 != "set-text-scale")
                         {
@@ -241,65 +202,6 @@ public class WebBridge
                         AppSettings.Instance.TextScale = num1;
                         AppSettings.Instance.Save();
                         TextScaleChanged?.Invoke(num1);
-                        return;
-                    default:
-                        return;
-                }
-            case 15:
-                switch (str1[0])
-                {
-                    case 'd':
-                        if (str1 != "download-update")
-                            return;
-                        Task.Run((Func<Task>)(async () =>
-                        {
-                            try
-                            {
-                                UpdateInfo? info = data.Deserialize<UpdateInfo>(JsonOpts);
-                                if (info == null)
-                                {
-                                    _form.BeginInvoke((Action)(() => Reply(callId, (object)new
-                                    {
-                                        success = false,
-                                        error = "invalid info"
-                                    })));
-                                }
-                                else
-                                {
-                                    string filePath = await Updater.DownloadUpdate(info, pct => _form.BeginInvoke((Action)(() => SendToJs("update-download-progress", (object)pct))));
-                                    _form.BeginInvoke((Action)(() => Reply(callId, (object)new
-                                    {
-                                        success = true,
-                                        filePath = filePath
-                                    })));
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                _form.BeginInvoke((Action)(() => Reply(callId, (object)new
-                                {
-                                    success = false,
-                                    error = ex.Message
-                                })));
-                            }
-                        }));
-                        return;
-                    case 'g':
-                        if (str1 != "get-uploader-id")
-                            return;
-                        Reply(callId, AppSettings.Instance.UploaderId);
-                        return;
-                    case 'o':
-                        if (str1 != "open-combat-web")
-                            return;
-                        string? str2 = data?.GetValue<string>();
-                        if (string.IsNullOrEmpty(str2))
-                            return;
-                        string uploaderId = AppSettings.Instance.UploaderId;
-                        Process.Start(new ProcessStartInfo($"https://a2viewer.co.kr/combat/{str2}#uid={uploaderId}")
-                        {
-                            UseShellExecute = true
-                        });
                         return;
                     default:
                         return;
@@ -358,17 +260,6 @@ public class WebBridge
                                 error = str4
                             })));
                         }));
-                        return;
-                    case 'p':
-                        if (str1 != "open-release-page")
-                            return;
-                        string? str5 = data?.GetValue<string>();
-                        if (string.IsNullOrEmpty(str5))
-                            return;
-                        Process.Start(new ProcessStartInfo(str5)
-                        {
-                            UseShellExecute = true
-                        });
                         return;
                     case 'u':
                         if (str1 != "suspend-shortcuts")
@@ -455,7 +346,7 @@ public class WebBridge
         }
     }
 
-    public void BindDpsMeter(DpsMeter meter, CombatUploader uploader)
+    public void BindDpsMeter(DpsMeter meter)
     {
         _dpsMeter = meter;
         meter.DpsUpdated += snapshot =>
@@ -500,7 +391,6 @@ public class WebBridge
             catch
             {
             }
-            uploader.Upload(record);
         };
     }
 

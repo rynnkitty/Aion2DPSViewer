@@ -3,11 +3,6 @@
 <head>
 <meta charset="utf-8">
 <style>
-@font-face { font-family: 'LINE Seed Sans KR'; font-weight: 400; src: url('https://a2viewer.local/fonts/LINESeedKR-Rg.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'LINE Seed Sans KR'; font-weight: 700; src: url('https://a2viewer.local/fonts/LINESeedKR-Bd.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'Orbit'; font-weight: 400; src: url('https://a2viewer.local/fonts/Orbit-Regular.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'Gmarket Sans'; font-weight: 500; src: url('https://a2viewer.local/fonts/GmarketSans-Medium.woff2') format('woff2'); font-display: swap; }
-@font-face { font-family: 'Gmarket Sans'; font-weight: 700; src: url('https://a2viewer.local/fonts/GmarketSans-Bold.woff2') format('woff2'); font-display: swap; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 11px; }
 body {
@@ -540,10 +535,6 @@ select option {
         <option value="on">GPU 가속 사용</option>
       </select>
     </div>
-    <div class="row">
-      <label>웹 연동 기기등록<button class="guide-btn" onclick="window.open('https://a2viewer.co.kr/guide','_blank')">?</button><span class="hint">전투 기록을 웹에서 조회</span></label>
-      <button class="link-btn" id="copyLinkBtn" onclick="copyLink()">링크 복사</button>
-    </div>
   </div>
 
   <!-- 단축키 -->
@@ -620,7 +611,6 @@ let state = {
   fontScale: S.fontScale ?? 100,
   trackedSkills: S.trackedSkills ? JSON.parse(JSON.stringify(S.trackedSkills)) : {},
   autoTabSwitch: S.autoTabSwitch ?? true,
-  uploaderId: S.uploaderId || '',
   dpsPercentMode: S.dpsPercentMode || 'party',
   scoreFormat: S.scoreFormat || 'full',
   dpsTimeMode: 'wallclock',
@@ -678,15 +668,6 @@ function toggleAutoTab() {
 }
 function changeGpuMode(val) {
   state.gpuMode = val;
-}
-
-function copyLink() {
-  if (!state.uploaderId) return;
-  var url = 'https://a2viewer.co.kr/link#uid=' + state.uploaderId;
-  msg({type:'copy-to-clipboard', data: url});
-  var btn = document.getElementById('copyLinkBtn');
-  btn.textContent = '복사됨!';
-  setTimeout(function() { btn.textContent = '링크 복사'; }, 2000);
 }
 
 // Shortcuts

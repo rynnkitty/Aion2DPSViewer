@@ -128,7 +128,6 @@ public class SettingsForm : Form
             keepPartyOnRefresh = instance.KeepPartyOnRefresh,
             keepSelfOnRefresh = instance.KeepSelfOnRefresh,
             autoTabSwitch = instance.AutoTabSwitch,
-            uploaderId = instance.UploaderId,
             dpsPercentMode = instance.DpsPercentMode,
             scoreFormat = instance.ScoreFormat,
             dpsTimeMode = instance.DpsTimeMode,
@@ -232,11 +231,6 @@ public class SettingsForm : Form
                         if (str != "settings-close")
                             break;
                         BeginInvoke((Action)(() => Close()));
-                        break;
-                    case 15:
-                        if (str != "get-uploader-id")
-                            break;
-                        Reply(int32, AppSettings.Instance.UploaderId);
                         break;
                     case 16:
                         if (str != "resume-shortcuts")

@@ -88,31 +88,11 @@ public class ErrorReporter
         }
     }
 
-    private static byte[]? ReadUpdateLog()
-    {
-        try
-        {
-            string updateLogPath = Updater.UpdateLogPath;
-            if (!File.Exists(updateLogPath))
-                return null;
-            byte[] numArray = File.ReadAllBytes(updateLogPath);
-            return numArray.Length != 0 ? numArray : null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     private static void AttachExtraLogs(List<(string name, byte[] data, string contentType)> files)
     {
         byte[]? numArray1 = ReadPacketLog();
         if (numArray1 != null)
             files.Add(("packet_log.log", numArray1, "text/plain"));
-        byte[]? numArray2 = ReadUpdateLog();
-        if (numArray2 == null)
-            return;
-        files.Add(("update_log.log", numArray2, "text/plain"));
     }
 
     public static async Task<(bool success, string? error)> SendErrorReport(string? userMessage)

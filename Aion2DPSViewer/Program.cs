@@ -60,18 +60,6 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // Consent check
-        string consentVersion = AppSettings.Instance.ConsentVersion;
-        if (consentVersion != ConsentForm.RequiredVersion)
-        {
-            using var consent = new ConsentForm();
-            Application.Run(consent);
-            if (!consent.Agreed)
-                return;
-            AppSettings.Instance.ConsentVersion = ConsentForm.RequiredVersion;
-            AppSettings.Instance.Save();
-        }
-
         Application.Run(new OverlayForm());
     }
 }

@@ -73,12 +73,6 @@ public class AppSettings
 
     public string? ThemeJson { get; set; }
 
-    public string UploaderId { get; set; } = Guid.NewGuid().ToString("N");
-
-    public string? ConsentVersion { get; set; }
-
-    public DateTime? ConsentedAt { get; set; }
-
     [JsonIgnore]
     public WindowState WindowState { get; set; } = new WindowState();
 

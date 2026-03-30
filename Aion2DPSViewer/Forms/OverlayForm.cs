@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +22,6 @@ public class OverlayForm : Form
     private WebBridge _bridge;
     private PacketSniffer? _sniffer;
     private DpsMeter? _dpsMeter;
-    private readonly CombatUploader _combatUploader = new CombatUploader();
     private TrayManager _tray;
     private HotkeyManager _hotkeys;
     private ForegroundWatcher _fgWatcher;
@@ -36,7 +37,6 @@ public class OverlayForm : Form
     private bool _manuallyHidden;
     private bool _initialShowDone;
     private System.Windows.Forms.Timer? _uiReadyFallback;
-    private System.Threading.Timer? _updateCheckTimer;
     private readonly PartyTracker _partyTracker = new PartyTracker();
     private CharacterService? _charService;
     private DpsDetailForm? _dpsDetailForm;
@@ -170,7 +170,7 @@ public class OverlayForm : Form
             (type, data) => _bridge?.SendToJs(type, data),
             action => BeginInvoke(action),
             () => _partyTracker.Epoch);
-        _webView.CoreWebView2.Navigate("https://a2viewer.local/index.html");
+        _webView.CoreWebView2.NavigateToString(BuildOverlayHtml());
         _uiReadyFallback = new System.Windows.Forms.Timer() { Interval = 3000 };
         _uiReadyFallback.Tick += new EventHandler(UiReadyFallback_Tick);
         _uiReadyFallback.Start();
@@ -202,36 +202,6 @@ public class OverlayForm : Form
         Show();
         TopMost = false;
         TopMost = true;
-        RunUpdateCheck();
-        _updateCheckTimer = new System.Threading.Timer(_ => RunUpdateCheck(), null, TimeSpan.FromMinutes(5.0), TimeSpan.FromMinutes(5.0));
-    }
-
-    private void RunUpdateCheck()
-    {
-        Task.Run((Func<Task>)(async () =>
-        {
-            try
-            {
-                UpdateInfo? update = await Updater.CheckForUpdate();
-                if (update != null)
-                {
-                    Console.Error.WriteLine("[updater] 새 버전 발견: v" + update.Version);
-                    BeginInvoke((Action)(() => _bridge?.SendToJs("update-available", (object)new
-                    {
-                        version = update.Version,
-                        currentVersion = update.CurrentVersion,
-                        downloadUrl = update.DownloadUrl,
-                        releaseUrl = update.ReleaseUrl,
-                        releaseNotes = update.ReleaseNotes,
-                        assetName = update.AssetName
-                    })));
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine("[updater] 자동 체크 실패: " + ex.Message);
-            }
-        }));
     }
 
     public void HideOverlay()
@@ -857,7 +827,7 @@ public class OverlayForm : Form
         {
             _dpsMeter?.Dispose();
             _dpsMeter = new DpsMeter();
-            _bridge?.BindDpsMeter(_dpsMeter, _combatUploader);
+            _bridge?.BindDpsMeter(_dpsMeter);
             if (_charService != null)
                 _charService.DpsMeter = _dpsMeter;
             _dpsMeter.SelfDetected += (nickname, serverId) =>
@@ -891,6 +861,14 @@ public class OverlayForm : Form
         }
     }
 
+    private static string BuildOverlayHtml()
+    {
+        using Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream("Aion2DPSViewer.overlay.html");
+        if (s == null) return "<html><body style='color:red'>overlay.html not found</body></html>";
+        using StreamReader r = new StreamReader(s);
+        return r.ReadToEnd();
+    }
+
     private void Cleanup()
     {
         _hotkeys?.UnregisterAll();
@@ -898,7 +876,6 @@ public class OverlayForm : Form
         _tray?.Dispose();
         _moveTimer?.Stop();
         _hitTestTimer?.Stop();
-        _updateCheckTimer?.Dispose();
         _dpsMeter?.Dispose();
     }
 }

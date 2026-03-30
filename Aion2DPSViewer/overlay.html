@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg: rgba(10,14,30,0.88);
+  --titlebar: rgba(8,12,25,0.95);
+  --border: rgba(255,255,255,0.08);
+  --text: #e0e8ff;
+  --muted: #8899bb;
+  --accent: #5599ff;
+  --font-ui: 'Segoe UI','Malgun Gothic',sans-serif;
+  --font-num: 'Consolas','Courier New',monospace;
+  --p0: #5599ff; --p1: #ff6b6b; --p2: #54d48a; --p3: #ffcc44;
+  --p4: #cc77ff; --p5: #ff9944; --p6: #44ddcc; --p7: #ff7799;
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font-ui)}
+body{background:transparent;color:var(--text);font-size:11px;user-select:none;-webkit-user-select:none}
+
+#app{width:100%;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+
+/* Resize edges */
+.resize-n,.resize-s,.resize-e,.resize-w,.resize-ne,.resize-nw,.resize-se,.resize-sw{position:absolute;z-index:100}
+.resize-n{top:0;left:6px;right:6px;height:6px;cursor:n-resize}
+.resize-s{bottom:0;left:6px;right:6px;height:6px;cursor:s-resize}
+.resize-e{right:0;top:6px;bottom:6px;width:6px;cursor:e-resize}
+.resize-w{left:0;top:6px;bottom:6px;width:6px;cursor:w-resize}
+.resize-ne{top:0;right:0;width:10px;height:10px;cursor:ne-resize}
+.resize-nw{top:0;left:0;width:10px;height:10px;cursor:nw-resize}
+.resize-se{bottom:0;right:0;width:10px;height:10px;cursor:se-resize}
+.resize-sw{bottom:0;left:0;width:10px;height:10px;cursor:sw-resize}
+
+/* Title bar */
+#titlebar{
+  height:28px;min-height:28px;
+  background:var(--titlebar);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 4px 0 6px;gap:2px;
+  cursor:move;flex-shrink:0;
+}
+#titlebar .logo{
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--accent);text-transform:uppercase;margin-right:4px;
+  flex-shrink:0;cursor:move;
+}
+.tab-btn{
+  height:20px;padding:0 8px;border:none;background:transparent;
+  color:var(--muted);font-size:10px;font-family:var(--font-ui);
+  cursor:pointer;border-radius:2px;transition:all .15s;letter-spacing:.5px;
+  flex-shrink:0;
+}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.tab-btn.active{color:var(--accent);background:rgba(85,153,255,0.12)}
+#titlebar .spacer{flex:1;cursor:move}
+#btn-reset{
+  width:22px;height:22px;border:none;background:transparent;
+  color:var(--muted);font-size:14px;cursor:pointer;
+  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#btn-reset:hover{color:var(--text);background:rgba(255,255,255,0.07)}
+#btn-settings{
+  width:22px;height:22px;border:none;background:transparent;
+  color:var(--muted);font-size:12px;cursor:pointer;
+  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#btn-settings:hover{color:var(--text);background:rgba(255,255,255,0.07)}
+#btn-close{
+  width:22px;height:22px;border:none;background:transparent;
+  color:var(--muted);font-size:14px;cursor:pointer;
+  border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#btn-close:hover{color:#ff5555;background:rgba(255,60,60,0.15)}
+
+/* Content area */
+#content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+
+/* Tabs */
+.tab-pane{display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden}
+.tab-pane.active{display:flex}
+
+/* Idle state */
+#idle-msg{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;
+  color:var(--muted);font-size:11px;
+}
+#idle-msg .idle-icon{font-size:22px;opacity:.35}
+#idle-msg .idle-text{opacity:.6;letter-spacing:.5px}
+#idle-msg .status-hint{font-size:10px;opacity:.35;max-width:140px;text-align:center;line-height:1.5}
+
+/* DPS table */
+#dps-pane{overflow:hidden}
+#dps-header{
+  display:grid;grid-template-columns:18px 1fr 72px 40px 38px;
+  padding:3px 6px;gap:4px;
+  font-size:9px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+  background:rgba(0,0,0,0.15);
+}
+#dps-header span:nth-child(n+3){text-align:right}
+#dps-rows{flex:1;overflow-y:auto;overflow-x:hidden}
+#dps-rows::-webkit-scrollbar{width:2px}
+#dps-rows::-webkit-scrollbar-track{background:transparent}
+#dps-rows::-webkit-scrollbar-thumb{background:rgba(85,153,255,0.2);border-radius:1px}
+
+.dps-row{
+  display:grid;grid-template-columns:18px 1fr 72px 40px 38px;
+  padding:3px 6px;gap:4px;cursor:pointer;
+  transition:background .1s;position:relative;align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.02);
+}
+.dps-row:hover{background:rgba(255,255,255,0.05)}
+.dps-row.active-row{background:rgba(85,153,255,0.08)}
+.dps-row .rank{font-size:9px;color:var(--muted);font-family:var(--font-num);text-align:center}
+.dps-row .pname{
+  font-size:11px;color:var(--text);overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis;
+  position:relative;z-index:1;
+}
+.dps-row .pname .bar{
+  position:absolute;left:0;top:0;bottom:0;
+  opacity:.18;border-radius:1px;transition:width .35s ease;
+  z-index:-1;
+}
+.dps-row .pdps{font-family:var(--font-num);font-size:11px;color:var(--text);text-align:right}
+.dps-row .ppct{font-family:var(--font-num);font-size:10px;color:var(--muted);text-align:right}
+.dps-row .pcrit{font-family:var(--font-num);font-size:10px;color:var(--muted);text-align:right}
+
+.no-data{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:11px;opacity:.5;letter-spacing:.5px;
+}
+
+/* Party tab */
+#party-pane{overflow:hidden}
+#party-rows{flex:1;overflow-y:auto}
+#party-rows::-webkit-scrollbar{width:2px}
+#party-rows::-webkit-scrollbar-track{background:transparent}
+#party-rows::-webkit-scrollbar-thumb{background:rgba(85,153,255,0.2);border-radius:1px}
+.party-row{
+  padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.03);
+  display:flex;align-items:center;gap:6px;
+}
+.party-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.6;flex-shrink:0}
+.party-name{font-size:11px;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.party-empty{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:11px;opacity:.45;letter-spacing:.3px;
+}
+
+/* Status bar */
+#statusbar{
+  height:18px;min-height:18px;flex-shrink:0;
+  background:rgba(0,0,0,0.3);border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 7px;gap:8px;
+}
+#statusbar .stat-item{
+  display:flex;align-items:center;gap:3px;
+  font-size:9px;color:var(--muted);
+}
+#statusbar .stat-item .label{opacity:.55;letter-spacing:.5px}
+#statusbar .stat-item .val{font-family:var(--font-num)}
+#statusbar .spacer{flex:1}
+#sniffer-status{font-size:9px;color:var(--muted);opacity:.5;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#sniffer-status.error{color:#ff7777;opacity:.8}
+
+/* Compact mode */
+#app.compact #titlebar{display:none}
+#app.compact #statusbar{display:none}
+#app.compact #content{display:none}
+#compact-bar{
+  display:none;height:100%;
+  background:rgba(8,12,25,0.92);
+  align-items:center;justify-content:space-between;
+  padding:0 8px;gap:6px;border-bottom:1px solid var(--border);
+}
+#app.compact{background:rgba(8,12,25,0.92)}
+#app.compact #compact-bar{display:flex}
+.compact-top{font-size:10px;color:var(--accent);font-family:var(--font-num)}
+.compact-name{font-size:10px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:80px}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Resize handles -->
+  <div class="resize-nw" data-dir="top-left"></div>
+  <div class="resize-n"  data-dir="top"></div>
+  <div class="resize-ne" data-dir="top-right"></div>
+  <div class="resize-e"  data-dir="right"></div>
+  <div class="resize-se" data-dir="bottom-right"></div>
+  <div class="resize-s"  data-dir="bottom"></div>
+  <div class="resize-sw" data-dir="bottom-left"></div>
+  <div class="resize-w"  data-dir="left"></div>
+
+  <!-- Compact bar (compact mode only) -->
+  <div id="compact-bar">
+    <span class="compact-name" id="compact-name">-</span>
+    <span class="compact-top" id="compact-dps">-</span>
+  </div>
+
+  <!-- Title bar -->
+  <div id="titlebar">
+    <span class="logo">A2</span>
+    <button class="tab-btn active" id="tab-dps" onclick="switchTab('dps')">DPS</button>
+    <button class="tab-btn" id="tab-party" onclick="switchTab('party')">파티</button>
+    <div class="spacer"></div>
+    <button id="btn-reset" title="초기화">↺</button>
+    <button id="btn-settings" title="설정">⚙</button>
+    <button id="btn-close" title="닫기">×</button>
+  </div>
+
+  <!-- Content -->
+  <div id="content">
+    <!-- DPS Tab -->
+    <div class="tab-pane active" id="dps-pane">
+      <div id="dps-header">
+        <span>#</span><span>이름</span><span style="text-align:right">DPS</span><span style="text-align:right">비율</span><span style="text-align:right">크리</span>
+      </div>
+      <div id="dps-rows">
+        <div class="no-data" id="dps-empty">전투 대기중...</div>
+      </div>
+    </div>
+
+    <!-- Party Tab -->
+    <div class="tab-pane" id="party-pane">
+      <div id="party-rows">
+        <div class="party-empty" id="party-empty">파티 없음</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div id="statusbar">
+    <div class="stat-item">
+      <span class="label">핑</span>
+      <span class="val" id="stat-ping">-</span>
+    </div>
+    <div class="stat-item" id="stat-time-wrap" style="display:none">
+      <span class="label">시간</span>
+      <span class="val" id="stat-time">0:00</span>
+    </div>
+    <div class="stat-item" id="stat-target-wrap" style="display:none">
+      <span class="label">대상</span>
+      <span class="val" id="stat-target" style="max-width:70px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis"></span>
+    </div>
+    <div class="spacer"></div>
+    <span id="sniffer-status">연결 대기중...</span>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const COLORS = ['--p0','--p1','--p2','--p3','--p4','--p5','--p6','--p7'];
+const S = window.__SETTINGS__ || {};
+
+let state = {
+  tab: 'dps',
+  compact: false,
+  players: [],
+  party: [],
+  ping: -1,
+  snifferOk: false,
+  snifferMsg: '연결 대기중...',
+  snifferError: false,
+  elapsed: 0,
+  target: null,
+  clickLocked: false,
+};
+
+function send(type, data){
+  try{ window.chrome.webview.postMessage(JSON.stringify(data===undefined?{type}:{type,data})); }catch(e){}
+}
+
+function fmt(n){
+  n = Number(n)||0;
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return String(n);
+}
+
+function fmtTime(s){
+  s = Math.floor(s||0);
+  const m=Math.floor(s/60), ss=s%60;
+  return m+':'+(ss<10?'0':'')+ss;
+}
+
+function colorFor(idx){
+  return 'var('+COLORS[idx % COLORS.length]+')';
+}
+
+// --- Render DPS ---
+function renderDps(){
+  const rows = document.getElementById('dps-rows');
+  const empty = document.getElementById('dps-empty');
+  if(!state.players || state.players.length===0){
+    empty.style.display='flex'; rows.innerHTML=''; rows.appendChild(empty); return;
+  }
+  empty.style.display='none';
+  const sorted = [...state.players].sort((a,b)=>b.dps-a.dps);
+  const topDps = sorted[0]?.dps||1;
+  let html='';
+  sorted.forEach((p,i)=>{
+    const barW = topDps>0?Math.max(1,Math.round(p.dps/topDps*100)):0;
+    const c = colorFor(i);
+    const crit = p.critRate?Math.round(p.critRate*100)+'%':'-';
+    const pct = p.damagePercent?Math.round(p.damagePercent*10)/10+'%':'-';
+    html+=`<div class="dps-row" data-eid="${p.entityId}">
+      <span class="rank">${i+1}</span>
+      <span class="pname">
+        <span class="bar" style="width:${barW}%;background:${c}"></span>
+        ${esc(p.name)}
+      </span>
+      <span class="pdps">${fmt(p.dps)}</span>
+      <span class="ppct">${pct}</span>
+      <span class="pcrit">${crit}</span>
+    </div>`;
+  });
+  rows.innerHTML=html;
+  rows.querySelectorAll('.dps-row').forEach(r=>{
+    r.addEventListener('mousedown',e=>{e.stopPropagation();});
+    r.addEventListener('click',e=>{
+      e.stopPropagation();
+      const eid=parseInt(r.dataset.eid,10);
+      send('dps-detail-pin',{entityId:eid,maskNick:false});
+    });
+  });
+  // compact
+  if(sorted[0]){
+    document.getElementById('compact-dps').textContent=fmt(sorted[0].dps)+' DPS';
+    document.getElementById('compact-name').textContent=sorted[0].name;
+  }
+}
+
+// --- Render Party ---
+function renderParty(){
+  const rows = document.getElementById('party-rows');
+  const empty = document.getElementById('party-empty');
+  if(!state.party||state.party.length===0){
+    empty.style.display='flex'; rows.innerHTML=''; rows.appendChild(empty); return;
+  }
+  empty.style.display='none';
+  let html='';
+  state.party.forEach(p=>{
+    const name=p.split(':')[0];
+    html+=`<div class="party-row"><span class="party-dot"></span><span class="party-name">${esc(name)}</span></div>`;
+  });
+  rows.innerHTML=html;
+}
+
+// --- Status bar ---
+function renderStatus(){
+  const ping=document.getElementById('stat-ping');
+  ping.textContent=state.ping<0?'-':state.ping+'ms';
+  ping.style.color=state.ping>100?'#ff7777':state.ping>50?'#ffcc44':'';
+
+  const tw=document.getElementById('stat-time-wrap');
+  const tt=document.getElementById('stat-target-wrap');
+  if(state.players&&state.players.length>0){
+    tw.style.display='flex';
+    document.getElementById('stat-time').textContent=fmtTime(state.elapsed);
+    if(state.target&&state.target.name){
+      tt.style.display='flex';
+      document.getElementById('stat-target').textContent=state.target.name;
+    } else tt.style.display='none';
+  } else { tw.style.display='none'; tt.style.display='none'; }
+
+  const ss=document.getElementById('sniffer-status');
+  ss.textContent=state.snifferMsg;
+  ss.className=state.snifferError?'error':'';
+}
+
+// --- Tab switch ---
+function switchTab(tab){
+  state.tab=tab;
+  document.getElementById('dps-pane').classList.toggle('active',tab==='dps');
+  document.getElementById('party-pane').classList.toggle('active',tab==='party');
+  document.getElementById('tab-dps').classList.toggle('active',tab==='dps');
+  document.getElementById('tab-party').classList.toggle('active',tab==='party');
+  send('set-active-tab',tab);
+}
+window.switchTab=switchTab;
+
+// --- Messages from C# ---
+function onMessage(e){
+  let msg;
+  try{ msg=typeof e.data==='string'?JSON.parse(e.data):e.data; }catch(ex){ return; }
+  const {type,data}=msg;
+  switch(type){
+    case 'dps-update':
+      state.players=data.players||[];
+      state.elapsed=data.elapsedSeconds||0;
+      state.target=data.target||null;
+      renderDps(); renderStatus(); break;
+    case 'party-sync':
+      state.party=data||[];
+      renderParty(); break;
+    case 'party-clear':
+      state.party=[];
+      renderParty(); break;
+    case 'ping-update':
+      state.ping=data;
+      renderStatus(); break;
+    case 'sniffer-error':
+      state.snifferMsg=data||'오류';
+      state.snifferError=true;
+      renderStatus(); break;
+    case 'preload-done':
+      state.snifferMsg='패킷 캡처 중';
+      state.snifferError=false;
+      renderStatus(); break;
+    case 'status':
+      if(data&&data.text){
+        state.snifferMsg=data.text;
+        state.snifferError=false;
+        renderStatus();
+      } break;
+    case 'toggle-compact':
+      state.compact=!state.compact;
+      document.getElementById('app').classList.toggle('compact',state.compact);
+      send('set-compact',state.compact); break;
+    case 'switch-tab':
+      switchTab(state.tab==='dps'?'party':'dps'); break;
+    case 'clear-shortcut':
+      state.players=[];
+      renderDps(); renderStatus(); break;
+    case 'combat-started':
+      state.players=[];
+      renderDps(); break;
+    case 'settings-sync':
+      break;
+    case 'theme-changed': case 'shortcuts-updated':
+    case 'overlay-only-changed': case 'tracked-skills-updated':
+    case 'char-data': case 'combat-record-saved':
+      break;
+  }
+}
+
+if(window.chrome&&window.chrome.webview){
+  window.chrome.webview.addEventListener('message',onMessage);
+}
+
+// --- Wire up buttons ---
+document.getElementById('btn-reset').addEventListener('mousedown',e=>e.stopPropagation());
+document.getElementById('btn-reset').addEventListener('click',e=>{e.stopPropagation();send('dps-reset');});
+document.getElementById('btn-settings').addEventListener('mousedown',e=>e.stopPropagation());
+document.getElementById('btn-settings').addEventListener('click',e=>{e.stopPropagation();send('open-settings');});
+document.getElementById('btn-close').addEventListener('mousedown',e=>e.stopPropagation());
+document.getElementById('btn-close').addEventListener('click',e=>{e.stopPropagation();send('close-window');});
+
+// --- Drag ---
+const titlebar = document.getElementById('titlebar');
+titlebar.addEventListener('mousedown',e=>{
+  if(e.target.tagName==='BUTTON') return;
+  send('drag-start');
+});
+
+// --- Resize ---
+document.querySelectorAll('[data-dir]').forEach(el=>{
+  el.addEventListener('mousedown',e=>{
+    e.stopPropagation();
+    send('resize-start',el.dataset.dir);
+  });
+});
+
+// --- Global mouseup ---
+window.addEventListener('mouseup',()=>send('mouse-up'));
+
+// --- Escape helper ---
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// --- Initial render ---
+renderDps(); renderParty(); renderStatus();
+
+// --- Signal ready ---
+send('ui-ready');
+})();
+</script>
+</body>
+</html>
