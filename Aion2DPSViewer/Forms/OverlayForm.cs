@@ -399,7 +399,7 @@ public class OverlayForm : Form
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine("[app] 스니퍼 시작 실패: " + ex.Message);
+            Console.Error.WriteLine("[app] 스니퍼 시작 실패: " + ex.ToString());
             _bridge?.SendToJs("sniffer-error", "스니퍼 시작 실패 — Npcap 설치를 확인하세요.");
         }
     }
