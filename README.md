@@ -6,21 +6,6 @@
 
 ---
 
-## 스크린샷
-
-<table>
-<tr>
-<td><img src="Aion2DPSViewer/01.png" alt="대기 화면" width="380"/></td>
-<td><img src="Aion2DPSViewer/02.png" alt="전투 중 DPS" width="380"/></td>
-</tr>
-<tr>
-<td align="center">대기 화면 (데이터 없음)</td>
-<td align="center">전투 중 실시간 DPS</td>
-</tr>
-</table>
-
----
-
 ## 주요 기능
 
 | 기능 | 설명 |
