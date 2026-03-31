@@ -86,12 +86,13 @@ internal class CharacterService
             return;
         string cacheKey = $"{nickname}:{serverId}";
         int epoch = _getEpoch();
+        bool useEpochGuard = type == "party" || type == "party_request" || type == "party_accept";
         Task.Run((Func<Task>)(async () =>
         {
             try
             {
                 CombatScoreResult result = await CombatScore.QueryCombatScore(serverId.Value, nickname);
-                if (_getEpoch() != epoch)
+                if (useEpochGuard && _getEpoch() != epoch)
                 {
                     Console.Error.WriteLine($"[score] {nickname} 결과 무시 (파티 해산)");
                     return;
@@ -132,7 +133,7 @@ internal class CharacterService
             }
             catch (Exception ex)
             {
-                if (_getEpoch() != epoch)
+                if (useEpochGuard && _getEpoch() != epoch)
                     return;
                 string errMsg = !string.IsNullOrEmpty(ex.Message) ? ex.Message : ex.InnerException?.Message ?? ex.GetType().Name;
                 Console.Error.WriteLine($"[score] {nickname} 조회 실패: {errMsg}");
