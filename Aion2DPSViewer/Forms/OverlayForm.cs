@@ -445,7 +445,10 @@ public class OverlayForm : Form
                 text = $"파티 {members.Count}명"
             });
             foreach (PartyMember member in members)
-                Console.Error.WriteLine($"[party] 목록: {member.Nickname} CP={member.CombatPower} (패킷)");
+            {
+                Console.Error.WriteLine($"[party] 목록: {member.Nickname} CP={member.CombatPower} (패킷) → API 조회");
+                SendCharacterLoading(member.Nickname, member.ServerId, member.ServerName, "party");
+            }
         }));
         s.PartyUpdate += members => BeginInvoke((Action)(() =>
         {
