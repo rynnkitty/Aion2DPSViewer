@@ -9,7 +9,7 @@ namespace Aion2DPSViewer.Core;
 
 public class AppSettings
 {
-    private static readonly string CacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "A2Viewer");
+    private static readonly string CacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aion2Info");
     private static AppSettings? _instance;
     private static readonly JsonSerializerOptions JsonOpts = new JsonSerializerOptions()
     {
@@ -98,7 +98,7 @@ public class AppSettings
         else
         {
             Screen primaryScreen = Screen.PrimaryScreen;
-            data.WindowState.X = (primaryScreen != null ? primaryScreen.WorkingArea.Width : 1920) - 340;
+            data.WindowState.X = (primaryScreen != null ? primaryScreen.WorkingArea.Width : 1920) - 400;
         }
         SaveJson<AppSettings>("app_settings.json", data);
         foreach (KeyValuePair<string, List<string>> defaultDpSkill in GetDefaultDpSkills())

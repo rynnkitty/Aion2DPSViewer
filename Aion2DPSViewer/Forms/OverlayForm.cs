@@ -59,7 +59,7 @@ public class OverlayForm : Form
     public OverlayForm()
     {
         Aion2DPSViewer.Core.WindowState windowState = AppSettings.Instance.WindowState;
-        Text = "A2Viewer";
+        Text = "Aion2Info";
         Size = new Size(windowState.Width, windowState.Height);
         Location = new Point(windowState.X, windowState.Y);
         MinimumSize = new Size(300, 200);
@@ -88,7 +88,7 @@ public class OverlayForm : Form
         catch (Exception ex)
         {
             Console.Error.WriteLine($"[init] 초기화 실패: {ex}");
-            MessageBox.Show("초기화 실패:\n" + ex.Message, "A2Viewer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("초기화 실패:\n" + ex.Message, "Aion2Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -134,7 +134,7 @@ public class OverlayForm : Form
             browserArgs += " --disable-gpu";
         else if (gpuMode == "compositing-off")
             browserArgs += " --disable-gpu-compositing";
-        await WebViewHelper.InitAsync(_webView, "A2Viewer_WebView2", browserArgs);
+        await WebViewHelper.InitAsync(_webView, "Aion2Info_WebView2", browserArgs);
         EmbeddedWebServer.Setup(_webView.CoreWebView2);
         AppSettings instance = AppSettings.Instance;
         string str1 = JsonSerializer.Serialize(new
@@ -149,7 +149,10 @@ public class OverlayForm : Form
             knownDpSkills = instance.KnownDpSkills,
             keepPartyOnRefresh = instance.KeepPartyOnRefresh,
             keepSelfOnRefresh = instance.KeepSelfOnRefresh,
-            autoTabSwitch = instance.AutoTabSwitch
+            autoTabSwitch = instance.AutoTabSwitch,
+            dpsPercentMode = instance.DpsPercentMode,
+            scoreFormat = instance.ScoreFormat,
+            dpsTimeMode = instance.DpsTimeMode
         }, new JsonSerializerOptions()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -628,7 +631,7 @@ public class OverlayForm : Form
         });
         form.GpuOptionChanged += () =>
         {
-            if (MessageBox.Show("GPU 설정이 변경되었습니다. 적용하려면 프로그램을 재시작해야 합니다.\n\n지금 재시작하시겠습니까?", "A2Viewer 재시작 필요", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show("GPU 설정이 변경되었습니다. 적용하려면 프로그램을 재시작해야 합니다.\n\n지금 재시작하시겠습니까?", "Aion2Info 재시작 필요", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             Process.Start(Application.ExecutablePath);
             Application.Exit();
@@ -760,6 +763,8 @@ public class OverlayForm : Form
 
     public void SetOpacity(int percent)
     {
+        byte alpha = (byte)(Math.Max(10, Math.Min(100, percent)) * 255 / 100);
+        Win32Native.SetLayeredWindowAttributes(Handle, 0, alpha, Win32Native.LWA_ALPHA);
     }
 
     public void SetCompact(bool compact) => _isCompact = compact;

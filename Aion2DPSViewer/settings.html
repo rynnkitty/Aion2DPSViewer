@@ -613,7 +613,7 @@ let state = {
   autoTabSwitch: S.autoTabSwitch ?? true,
   dpsPercentMode: S.dpsPercentMode || 'party',
   scoreFormat: S.scoreFormat || 'full',
-  dpsTimeMode: 'wallclock',
+  dpsTimeMode: S.dpsTimeMode || 'wallclock',
   gpuMode: S.gpuMode || 'off',
 };
 const knownDpSkills = S.knownDpSkills || {};
@@ -874,7 +874,7 @@ function esc(s) {
 // ═══════════════════════════════════════════
 // 테마 시스템
 // ═══════════════════════════════════════════
-var THEME_STORAGE = 'a2viewer-overlay-theme';
+var THEME_STORAGE = 'aion2info-overlay-theme';
 var THEME_PRESETS = {
   midnight: { name:'다크 블루', vars:{'--bg-app-rgb':'8, 10, 18','--bg-titlebar-rgb':'20, 35, 70','--accent':'#7ab4ff','--accent-dim':'#5a8abf','--accent-rgb':'122, 180, 255','--text-primary':'#e0e0e0','--text-bright':'#c8e0ff','--text-secondary':'#8899aa','--text-muted':'#555','--gold':'#ffd060','--gold-rgb':'255, 208, 96','--name-asmo':'#b070dd','--name-elyos':'#70c8ff','--border-accent-rgb':'100, 160, 255','--green':'#5cc88a','--green-rgb':'80, 200, 120','--red':'#e04040','--red-rgb':'224, 64, 64','--orange':'#f0a000','--border-radius':'5px'}},
   abyss: { name:'딥 퍼플', vars:{'--bg-app-rgb':'6, 5, 16','--bg-titlebar-rgb':'30, 20, 55','--accent':'#9b7aff','--accent-dim':'#7a5abf','--accent-rgb':'155, 122, 255','--text-primary':'#d8d0e8','--text-bright':'#d0c0f0','--text-secondary':'#8878aa','--text-muted':'#504568','--gold':'#e0c060','--gold-rgb':'224, 192, 96','--name-asmo':'#c080ee','--name-elyos':'#80a8ff','--border-accent-rgb':'120, 100, 220','--green':'#60c890','--green-rgb':'96, 200, 144','--red':'#d04050','--red-rgb':'208, 64, 80','--orange':'#d0a020','--border-radius':'5px'}},

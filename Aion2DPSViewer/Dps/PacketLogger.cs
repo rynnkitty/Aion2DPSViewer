@@ -7,7 +7,7 @@ namespace Aion2DPSViewer.Dps;
 
 internal class PacketLogger : IDisposable
 {
-    private static readonly string LogDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "A2Viewer", "packet_logs");
+    private static readonly string LogDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aion2Info", "packet_logs");
     private StreamWriter? _writer;
     private long _bytesWritten;
     private long _feedSeq;

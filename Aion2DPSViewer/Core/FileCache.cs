@@ -6,7 +6,7 @@ namespace Aion2DPSViewer.Core;
 
 public static class FileCache
 {
-    private static readonly string CacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "A2Viewer");
+    private static readonly string CacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aion2Info");
 
     static FileCache() => Directory.CreateDirectory(CacheDir);
 

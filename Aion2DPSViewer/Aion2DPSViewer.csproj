@@ -178,6 +178,55 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="settings.html" />
     <EmbeddedResource Include="overlay.html" />
+    <EmbeddedResource Include="detail.html" />
+    <!-- Web resources for EmbeddedWebServer (served at https://aion2info/*) -->
+    <EmbeddedResource Include="Ref\index.html">
+      <LogicalName>Aion2Info.web.index.html</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\assets\index-RxyhloxW.js">
+      <LogicalName>Aion2Info.web.assets.index-RxyhloxW.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\assets\index-eSKOLO21.css">
+      <LogicalName>Aion2Info.web.assets.index-eSKOLO21.css</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\fonts\LINESeedKR-Rg.woff2">
+      <LogicalName>Aion2Info.web.fonts.LINESeedKR-Rg.woff2</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\fonts\LINESeedKR-Bd.woff2">
+      <LogicalName>Aion2Info.web.fonts.LINESeedKR-Bd.woff2</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\fonts\Orbit-Regular.woff2">
+      <LogicalName>Aion2Info.web.fonts.Orbit-Regular.woff2</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\fonts\GmarketSans-Medium.woff2">
+      <LogicalName>Aion2Info.web.fonts.GmarketSans-Medium.woff2</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\fonts\GmarketSans-Bold.woff2">
+      <LogicalName>Aion2Info.web.fonts.GmarketSans-Bold.woff2</LogicalName>
+    </EmbeddedResource>
+    <!-- Skill/buff/mob database resources for SkillDatabase -->
+    <EmbeddedResource Include="Ref\skills_db.json">
+      <LogicalName>skills_db.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\skills_ko.json">
+      <LogicalName>skills_ko.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\buffs_ko.json">
+      <LogicalName>buffs_ko.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\mobs.json">
+      <LogicalName>mobs.json</LogicalName>
+    </EmbeddedResource>
+    <!-- Cache seed resources for FileCache.SeedFromEmbeddedResource -->
+    <EmbeddedResource Include="Ref\calc_js_cache.js">
+      <LogicalName>Aion2DPSViewer.calc_js_cache.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\formula_cache.json">
+      <LogicalName>Aion2DPSViewer.formula_cache.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ref\skill_priorities_cache.json">
+      <LogicalName>Aion2DPSViewer.skill_priorities_cache.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.2849.39\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.2849.39\build\Microsoft.Web.WebView2.targets')" />
@@ -191,5 +240,7 @@
       <Link>WebView2Loader.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="01.png" />
+    <Content Include="02.png" />
   </ItemGroup>
 </Project>

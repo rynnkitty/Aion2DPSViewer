@@ -114,7 +114,7 @@ public class SettingsForm : Form
         webView2.DefaultBackgroundColor = Color.FromArgb(16, 20, 42);
         _webView = webView2;
         Controls.Add(_webView);
-        await WebViewHelper.InitAsync(_webView, "A2Viewer_WebView2_Settings");
+        await WebViewHelper.InitAsync(_webView, "Aion2Info_WebView2_Settings");
         AppSettings instance = AppSettings.Instance;
         string str1 = JsonSerializer.Serialize(new
         {

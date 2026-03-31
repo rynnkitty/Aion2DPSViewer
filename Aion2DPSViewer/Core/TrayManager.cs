@@ -13,7 +13,7 @@ public class TrayManager : IDisposable
     {
         _icon = new NotifyIcon()
         {
-            Text = "A2Viewer",
+            Text = "Aion2Info",
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application,
             Visible = true,
             ContextMenuStrip = BuildMenu(form)

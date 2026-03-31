@@ -45,7 +45,7 @@ body{background:transparent;color:var(--text);font-size:11px;user-select:none;-w
   cursor:move;
 }
 .brand{display:flex;flex-direction:column;justify-content:center;margin-right:6px;line-height:1;cursor:move;flex-shrink:0}
-.brand-name{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--logo);text-transform:uppercase}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--logo)}
 .brand-ver{font-size:8px;color:var(--muted);letter-spacing:.5px;margin-top:1px}
 .tab-group{display:flex;align-items:center;gap:2px;flex-shrink:0}
 .tabx{
@@ -137,6 +137,13 @@ body{background:transparent;color:var(--text);font-size:11px;user-select:none;-w
   color:var(--green);font-size:9px;font-weight:700;
   display:flex;align-items:center;flex-shrink:0;
 }
+.flag-badge{
+  height:16px;padding:0 5px;border-radius:2px;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.jonggul-badge{background:rgba(204,68,68,0.2);border:1px solid rgba(204,68,68,0.35);color:#cc4444}
+.naked-badge{background:rgba(204,68,170,0.2);border:1px solid rgba(204,68,170,0.35);color:#cc44aa}
 .empty-msg{
   flex:1;display:flex;align-items:center;justify-content:center;
   color:var(--muted);font-size:11px;opacity:.45;letter-spacing:.3px;
@@ -227,7 +234,7 @@ body{background:transparent;color:var(--text);font-size:11px;user-select:none;-w
   <!-- title bar -->
   <div id="tb">
     <div class="brand">
-      <span class="brand-name">A2VIEWER</span>
+      <span class="brand-name">Aion2Info</span>
       <span class="brand-ver" id="brand-ver">v0.0.0</span>
     </div>
     <div class="tab-group">
@@ -236,52 +243,51 @@ body{background:transparent;color:var(--text);font-size:11px;user-select:none;-w
     </div>
     <div class="tb-sep"></div>
     <div class="ctrl-group">
-      <button class="ctrl" id="btn-vis" title="표시/숨기기">👁</button>
-      <button class="ctrl" id="btn-lock" title="클릭 잠금">🔓</button>
-      <div id="opacity-wrap">
-        <input id="opacity-slider" type="range" min="10" max="100" value="80" title="투명도">
-      </div>
-      <button class="ctrl" id="btn-reset" title="초기화">↺</button>
-      <button class="ctrl" id="btn-settings" title="설정">⚙</button>
-      <button class="ctrl" id="btn-close" title="닫기">✕</button>
-    </div>
-  </div>
-
-  <!-- status row -->
-  <div id="sr">
-    <div class="st-dot" id="st-dot"></div>
-    <span id="st-text">연결 대기중...</span>
-    <div class="sort-group">
-      <button class="sbtn s0" id="sb0" onclick="setSort(0)">중검</button>
-      <button class="sbtn s1" id="sb1" onclick="setSort(1)">아이고</button>
-      <button class="sbtn s2 on" id="sb2" onclick="setSort(2)">전투력</button>
-      <button class="sbtn s3" id="sb3" onclick="setSort(3)">이름</button>
-    </div>
-  </div>
-
-  <!-- content -->
-  <div id="content">
-    <!-- 조회 tab -->
-    <div class="tab-pane active" id="lookup-pane">
-      <div id="party-list">
-        <div class="empty-msg" id="party-empty">파티 없음</div>
+        <!--<button class="ctrl" id="btn-vis" title="표시/숨기기">👁</button>-->
+        <button class="ctrl" id="btn-lock" title="클릭 잠금">🔓</button>
+        <div id="opacity-wrap">
+          <input id="opacity-slider" type="range" min="10" max="100" value="80" title="투명도">
+        </div>
+        <button class="ctrl" id="btn-reset" title="초기화">↺</button>
+        <button class="ctrl" id="btn-settings" title="설정">⚙</button>
+        <button class="ctrl" id="btn-close" title="닫기">✕</button>
       </div>
     </div>
 
-    <!-- DPS tab -->
-    <div class="tab-pane" id="dps-pane">
-      <div id="dps-inforow">
-        <span id="dps-elapsed">0초</span>
-        <div class="i-sep"></div>
-        <span id="dps-total">총 0</span>
-        <button id="btn-shot" title="스냅샷">▣</button>
-      </div>
-      <div id="dps-list">
-        <div class="empty-msg" id="dps-empty">대미지 데이터 없음</div>
-      </div>
+    <!-- status row -->
+        <div id="sr">
+            <div class="st-dot" id="st-dot"></div>
+            <span id="st-text">연결 대기중...</span>
+            <div class="sort-group">
+                <button class="sbtn s0 on" id="sb0" onclick="setSort(0)">종굴</button>
+                <button class="sbtn s1 on" id="sb1" onclick="setSort(1)">아이고</button>
+                <button class="sbtn s2 on" id="sb2" onclick="setSort(2)">전투력</button>
+            </div>
+        </div>
+
+        <!-- content -->
+        <div id="content">
+            <!-- 조회 tab -->
+            <div class="tab-pane active" id="lookup-pane">
+                <div id="party-list">
+                    <div class="empty-msg" id="party-empty">파티 없음</div>
+                </div>
+            </div>
+
+            <!-- DPS tab -->
+            <div class="tab-pane" id="dps-pane">
+                <div id="dps-inforow">
+                    <span id="dps-elapsed">0초</span>
+                    <div class="i-sep"></div>
+                    <span id="dps-total">총 0</span>
+                    <button id="btn-shot" title="스냅샷">▣</button>
+                </div>
+                <div id="dps-list">
+                    <div class="empty-msg" id="dps-empty">대미지 데이터 없음</div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -296,8 +302,42 @@ const JOB_KR_TO_COLOR = {
   '수호성':'#cc8800','정령성':'#2299aa','치유성':'#33aa66','호법성':'#9944aa'
 };
 
-// Sort modes: 0=DPS순, 1=전체피해, 2=전투력, 3=이름
-const SORT_LABELS = ['중검','아이고','전투력','이름'];
+// Sort modes: 0=DPS순, 1=전체피해, 2=전투력
+const SORT_LABELS = ['종굴','아이고','전투력'];
+
+// ── 테마 ────────────────────────────────────────
+const THEME_PRESETS = {
+  midnight:{'--bg-app-rgb':'8, 10, 18','--bg-titlebar-rgb':'20, 35, 70','--accent':'#7ab4ff','--text-primary':'#e0e0e0','--text-secondary':'#8899aa','--text-muted':'#555','--gold':'#ffd060','--name-elyos':'#70c8ff','--green':'#5cc88a'},
+  abyss:   {'--bg-app-rgb':'6, 5, 16','--bg-titlebar-rgb':'30, 20, 55','--accent':'#9b7aff','--text-primary':'#d8d0e8','--text-secondary':'#8878aa','--text-muted':'#504568','--gold':'#e0c060','--name-elyos':'#80a8ff','--green':'#60c890'},
+  deva:    {'--bg-app-rgb':'8, 14, 24','--bg-titlebar-rgb':'15, 30, 60','--accent':'#60c0ff','--text-primary':'#d0e0f0','--text-secondary':'#7090b0','--text-muted':'#405060','--gold':'#f0d060','--name-elyos':'#80d0ff','--green':'#50c880'},
+  asmodian:{'--bg-app-rgb':'16, 8, 14','--bg-titlebar-rgb':'40, 18, 35','--accent':'#c070dd','--text-primary':'#e0d0e0','--text-secondary':'#a080a0','--text-muted':'#604860','--gold':'#e0c060','--name-elyos':'#70b0e0','--green':'#60c880'},
+  flame:   {'--bg-app-rgb':'16, 8, 6','--bg-titlebar-rgb':'50, 25, 15','--accent':'#e08040','--text-primary':'#f0e0d0','--text-secondary':'#a08070','--text-muted':'#604840','--gold':'#ffc040','--name-elyos':'#70b0d0','--green':'#70c070'},
+  glass:   {'--bg-app-rgb':'0, 0, 0','--bg-titlebar-rgb':'0, 0, 0','--accent':'#7ab4ff','--text-primary':'#ffffff','--text-secondary':'#a0a8b8','--text-muted':'#606878','--gold':'#ffd060','--name-elyos':'#80d0ff','--green':'#60d080'}
+};
+function applyTheme(t){
+  if(!t) return;
+  const base=THEME_PRESETS[t.preset]||THEME_PRESETS.midnight;
+  const v=Object.assign({},base,t.customVars||{});
+  const r=document.documentElement.style;
+  const bg=v['--bg-app-rgb']||'8,10,18';
+  const tb=v['--bg-titlebar-rgb']||'20,35,70';
+  r.setProperty('--bg',`rgba(${bg},0.93)`);
+  r.setProperty('--tb',`rgba(${tb},0.97)`);
+  r.setProperty('--sr',`rgba(${bg},0.95)`);
+  r.setProperty('--text',v['--text-primary']||'#ddeeff');
+  r.setProperty('--muted',v['--text-secondary']||'#5577aa');
+  r.setProperty('--dim',v['--text-muted']||'#334466');
+  r.setProperty('--accent',v['--accent']||'#4488ff');
+  r.setProperty('--logo',v['--name-elyos']||'#64c8ff');
+  r.setProperty('--green',v['--green']||'#3ddc84');
+  r.setProperty('--dps-active',v['--gold']||'#f0a500');
+  if(t.fontFamily) r.setProperty('--fn',t.fontFamily);
+  if(t.jobColors){
+    Object.assign(JOB_KR_TO_COLOR,t.jobColors);
+    renderLookup();
+    renderDps();
+  }
+}
 
 const S = window.__SETTINGS__ || {};
 
@@ -306,7 +346,12 @@ let state = {
   tab: 'lookup',
   compact: false,
   clickLocked: false,
-  sortMode: 2,          // default: 전투력
+  displayModes: [true, true, true], // [종굴, 아이고, 전투력] 표시 여부
+  // settings
+  dpsPercentMode: S.dpsPercentMode || 'party',
+  scoreFormat: S.scoreFormat || 'full',
+  dpsTimeMode: S.dpsTimeMode || 'wallclock',
+  autoTabSwitch: S.autoTabSwitch ?? true,
   // sniffer
   snifferOk: false,
   snifferMsg: '연결 대기중...',
@@ -333,6 +378,7 @@ function send(type, data){
 }
 function fmt(n){
   n=Number(n)||0;
+  if(state.scoreFormat==='full') return n.toLocaleString();
   if(n>=1e9) return (n/1e9).toFixed(2)+'B';
   if(n>=1e6) return (n/1e6).toFixed(2)+'M';
   if(n>=1e3) return (n/1e3).toFixed(1)+'K';
@@ -380,12 +426,12 @@ function renderStatus(){
   if(state.selfName) document.getElementById('c-name').textContent=state.selfName;
 }
 
-// ── Sort buttons ──────────────────────────────────
+// ── Display toggle buttons ────────────────────────
 function setSort(mode){
-  state.sortMode=mode;
-  [0,1,2,3].forEach(i=>{
+  state.displayModes[mode]=!state.displayModes[mode];
+  [0,1,2].forEach(i=>{
     const b=document.getElementById('sb'+i);
-    b.classList.toggle('on', i===mode);
+    b.classList.toggle('on', state.displayModes[i]);
   });
   renderLookup();
   renderDps();
@@ -403,13 +449,15 @@ function renderLookup(){
   }
   empty.style.display='none';
 
-  // sort
+  // sort by cp when 전투력 display is on
   let sorted=[...keys];
-  if(state.sortMode===2){ // 전투력
+  if(state.displayModes[2]){
     sorted.sort((a,b)=>(state.partyMap[b]?.cp||0)-(state.partyMap[a]?.cp||0));
-  } else if(state.sortMode===3){ // 이름
-    sorted.sort((a,b)=>a.localeCompare(b));
   }
+
+  const showJonggul=state.displayModes[0];
+  const showNaked=state.displayModes[1];
+  const showCp=state.displayModes[2];
 
   let html='';
   sorted.forEach(key=>{
@@ -426,8 +474,12 @@ function renderLookup(){
     html+=`<span class="party-name">${esc(name)}<span class="srv">${srv?`[${esc(srv)}]`:''}</span></span>`;
     if(m.loading) html+=`<span class="party-loading">조회 중...</span>`;
     html+=`</div>`;
-    if(cp>0) html+=`<span class="party-cp">${cp.toLocaleString()}</span>`;
-    else if(!m.loading) html+=`<span class="party-cp" style="color:var(--dim)">-</span>`;
+    if(showJonggul&&m.hasJonggul) html+=`<span class="flag-badge jonggul-badge">종굴</span>`;
+    if(showNaked&&m.hasNaked) html+=`<span class="flag-badge naked-badge">아이고</span>`;
+    if(showCp){
+      if(cp>0) html+=`<span class="party-cp">${cp.toLocaleString()}</span>`;
+      else if(!m.loading) html+=`<span class="party-cp" style="color:var(--dim)">-</span>`;
+    }
     if(isSelf) html+=`<span class="self-badge">나</span>`;
     html+=`</div>`;
   });
@@ -441,7 +493,9 @@ const DPS_COLORS=['#5599ff','#ff6b6b','#54d48a','#ffcc44','#cc77ff','#ff9944','#
 function renderDps(){
   const list=document.getElementById('dps-list');
   const empty=document.getElementById('dps-empty');
-  document.getElementById('dps-elapsed').textContent=fmtSec(state.elapsed);
+  const useWall=state.dpsTimeMode==='wallclock';
+  const elapsed=useWall?state.wallElapsed:state.elapsed;
+  document.getElementById('dps-elapsed').textContent=fmtSec(elapsed);
   document.getElementById('dps-total').textContent='총 '+(state.dpsPlayers?.length||0);
 
   if(!state.dpsPlayers||state.dpsPlayers.length===0){
@@ -449,26 +503,27 @@ function renderDps(){
   }
   empty.style.display='none';
 
+  const dpsKey=useWall?'wallDps':'dps';
   let sorted=[...state.dpsPlayers];
-  if(state.sortMode===3) sorted.sort((a,b)=>a.name.localeCompare(b.name));
-  else if(state.sortMode===2) sorted.sort((a,b)=>(b.combatPower||0)-(a.combatPower||0));
-  else sorted.sort((a,b)=>b.dps-a.dps); // default DPS sort
+  sorted.sort((a,b)=>(b[dpsKey]||0)-(a[dpsKey]||0));
 
-  const topDps=sorted[0]?.dps||1;
+  const topDps=sorted[0]?.[dpsKey]||1;
 
   let html='';
   sorted.forEach((p,i)=>{
     const color=DPS_COLORS[i%DPS_COLORS.length];
-    const barW=topDps>0?Math.max(1,Math.round(p.dps/topDps*100)):0;
+    const dpsVal=p[dpsKey]||0;
+    const barW=topDps>0?Math.max(1,Math.round(dpsVal/topDps*100)):0;
     const kr=jobFromCode(p.jobCode);
     const crit=p.critRate>0?Math.round(p.critRate*100)+'%':'-';
-    const pct=p.damagePercent>0?p.damagePercent.toFixed(1)+'%':'-';
+    const pctRaw=state.dpsPercentMode==='boss'?p.bossHpPercent:p.damagePercent;
+    const pct=pctRaw>0?pctRaw.toFixed(1)+'%':'-';
     html+=`<div class="dps-row" data-eid="${p.entityId}">`;
     html+=`<div class="dps-bar" style="width:${barW}%;background:${color}"></div>`;
     html+=`<span class="dps-rank">${i+1}</span>`;
     html+=jobIconHtml(kr||'?', 20).replace('job-icon','dps-job');
     html+=`<span class="dps-name">${esc(p.name)}</span>`;
-    html+=`<span class="dps-val">${fmt(p.dps)}</span>`;
+    html+=`<span class="dps-val">${fmt(dpsVal)}</span>`;
     html+=`<span class="dps-pct">${pct}</span>`;
     html+=`<span class="dps-crit">${crit}</span>`;
     html+=`</div>`;
@@ -485,7 +540,7 @@ function renderDps(){
 
   // compact
   if(sorted[0]){
-    document.getElementById('c-dps').textContent=fmt(sorted[0].dps);
+    document.getElementById('c-dps').textContent=fmt(sorted[0][dpsKey]||0);
   }
 }
 
@@ -546,7 +601,7 @@ function onMessage(e){
       if(!data||!data.nickname) break;
       const ckey=`${data.nickname}:${data.server_id}`;
       if(!state.partyMap[ckey]){
-        state.partyMap[ckey]={nickname:data.nickname,serverId:data.server_id,serverName:data.server_name||'',loading:false,error:false,cp:0,className:null};
+        state.partyMap[ckey]={nickname:data.nickname,serverId:data.server_id,serverName:data.server_name||'',loading:false,error:false,cp:0,className:null,hasJonggul:false,hasNaked:false};
         if(!state.partyOrder.includes(ckey)) state.partyOrder.push(ckey);
       }
       const entry=state.partyMap[ckey];
@@ -556,6 +611,8 @@ function onMessage(e){
       if(data.score){
         entry.cp=data.score.combatPower||0;
         entry.className=data.score.class||null;
+        entry.hasJonggul=data.score.hasJonggul===true;
+        entry.hasNaked=data.score.hasNaked===true;
       }
       if(data.type==='self_login'||data.type==='self'){
         state.selfKey=ckey;
@@ -605,7 +662,9 @@ function onMessage(e){
     case 'combat-started':
       state.dpsPlayers=[];
       state.elapsed=0;
+      state.wallElapsed=0;
       renderDps();
+      if(state.autoTabSwitch) switchTab('dps');
       break;
 
     case 'clear-shortcut':
@@ -615,9 +674,20 @@ function onMessage(e){
       break;
 
     case 'settings-sync':
+      if(data){
+        if(data.dpsPercentMode!=null) state.dpsPercentMode=data.dpsPercentMode;
+        if(data.scoreFormat!=null) state.scoreFormat=data.scoreFormat;
+        if(data.dpsTimeMode!=null) state.dpsTimeMode=data.dpsTimeMode;
+        if(data.autoTabSwitch!=null) state.autoTabSwitch=data.autoTabSwitch;
+        renderDps();
+      }
       break;
 
-    case 'theme-changed':case 'shortcuts-updated':
+    case 'theme-changed':
+      applyTheme(data);
+      break;
+
+    case 'shortcuts-updated':
     case 'overlay-only-changed':case 'tracked-skills-updated':
     case 'combat-record-saved':
       break;
@@ -656,7 +726,9 @@ const slider=document.getElementById('opacity-slider');
 slider.value=S.opacity||80;
 slider.addEventListener('mousedown',e=>e.stopPropagation());
 slider.addEventListener('input',()=>{
-  send('set-opacity',parseInt(slider.value,10));
+  const v=parseInt(slider.value,10);
+  document.documentElement.style.opacity=v/100;
+  send('set-opacity',v);
 });
 
 // Drag
@@ -678,10 +750,14 @@ window.addEventListener('mouseup',()=>send('mouse-up'));
 
 // ── Init ─────────────────────────────────────────
 document.getElementById('brand-ver').textContent='v'+state.version;
-if(S.opacity) slider.value=S.opacity;
+if(S.opacity){slider.value=S.opacity;document.documentElement.style.opacity=S.opacity/100;}
+try{ if(window.__THEME__) applyTheme(window.__THEME__); }catch(e){}
 
-// init sort
-setSort(2);
+// init display toggle buttons to match initial state
+[0,1,2].forEach(i=>{
+  const b=document.getElementById('sb'+i);
+  if(b) b.classList.toggle('on', state.displayModes[i]);
+});
 
 // initial render
 renderStatus();

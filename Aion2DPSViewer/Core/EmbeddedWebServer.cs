@@ -9,19 +9,19 @@ namespace Aion2DPSViewer.Core;
 public static class EmbeddedWebServer
 {
     private static readonly Dictionary<string, (byte[] data, string mime)> _cache = new Dictionary<string, (byte[], string)>();
-    private const string Host = "a2viewer.local";
+    private const string Host = "aion2info";
 
     public static void Setup(CoreWebView2 core)
     {
         LoadResources();
-        core.AddWebResourceRequestedFilter("https://a2viewer.local/*", CoreWebView2WebResourceContext.All);
+        core.AddWebResourceRequestedFilter("https://aion2info/*", CoreWebView2WebResourceContext.All);
         core.WebResourceRequested += new EventHandler<CoreWebView2WebResourceRequestedEventArgs>(OnResourceRequested);
     }
 
     private static void LoadResources()
     {
         Assembly assembly = typeof(EmbeddedWebServer).Assembly;
-        string str1 = "A2Viewer.web.";
+        string str1 = "Aion2Info.web.";
         foreach (string manifestResourceName in assembly.GetManifestResourceNames())
         {
             if (manifestResourceName.StartsWith(str1))

@@ -16,7 +16,7 @@ public class ErrorReporter
 {
     private static readonly string Version = typeof(ErrorReporter).Assembly.GetName().Version?.ToString(3) ?? "0.0.0";
     private static readonly HttpClient Http = new HttpClient() { Timeout = TimeSpan.FromSeconds(15.0) };
-    private static readonly string LogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "A2Viewer", "a2viewer.log");
+    private static readonly string LogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aion2Info", "aion2info.log");
     private static readonly object LogLock = new object();
 
     private static string WebhookUrl => Secrets.WebhookUrl;
@@ -102,13 +102,13 @@ public class ErrorReporter
             string str1 = ReadLog();
             string str2 = string.Join("\n", new string[]
             {
-                $"A2Viewer v{Version} (Native/.NET)",
+                $"Aion2Info v{Version} (Native/.NET)",
                 $".NET {Environment.Version} | {RuntimeInformation.OSDescription}",
                 !string.IsNullOrEmpty(userMessage) ? "메시지: " + userMessage : ""
             }).TrimEnd('\n');
             string content = $"**에러 리포트** `v{Version}`\n```\n{str2}\n```";
             var files = new List<(string, byte[], string)>();
-            files.Add(("a2viewer.log", Encoding.UTF8.GetBytes(str1), "text/plain"));
+            files.Add(("aion2info.log", Encoding.UTF8.GetBytes(str1), "text/plain"));
             AttachExtraLogs(files);
             return await SendToDiscord(content, files) ? (true, (string?)null) : (false, "Discord 전송 실패");
         }
@@ -125,7 +125,7 @@ public class ErrorReporter
             Log($"[CRASH] {ex}");
             string str1 = string.Join("\n", new string[]
             {
-                $"A2Viewer v{Version} (Native/.NET)",
+                $"Aion2Info v{Version} (Native/.NET)",
                 $".NET {Environment.Version} | {RuntimeInformation.OSDescription}",
                 $"예외: {ex.GetType().Name}: {ex.Message}",
                 $"시각: {DateTime.Now:yyyy-MM-dd HH:mm:ss}"
@@ -133,7 +133,7 @@ public class ErrorReporter
             string content = $"**크래시 리포트** `v{Version}`\n```\n{str1}\n```";
             string str2 = ReadLog();
             var files = new List<(string, byte[], string)>();
-            files.Add(("a2viewer.log", Encoding.UTF8.GetBytes(str2), "text/plain"));
+            files.Add(("aion2info.log", Encoding.UTF8.GetBytes(str2), "text/plain"));
             AttachExtraLogs(files);
             await SendToDiscord(content, files);
         }

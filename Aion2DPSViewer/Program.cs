@@ -37,7 +37,7 @@ internal static class Program
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
         // Set up logging to file
-        string logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "A2Viewer");
+        string logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Aion2Info");
         Directory.CreateDirectory(logDir);
         string logPath = Path.Combine(logDir, "error.log");
         var tee = new TeeTextWriter(Console.Error, new StreamWriter(logPath, append: true) { AutoFlush = true });
@@ -59,6 +59,10 @@ internal static class Program
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
+
+        FileCache.SeedFromEmbeddedResource("calc_js_cache.js", "Aion2DPSViewer.calc_js_cache.js");
+        FileCache.SeedFromEmbeddedResource("formula_cache.json", "Aion2DPSViewer.formula_cache.json");
+        FileCache.SeedFromEmbeddedResource("skill_priorities_cache.json", "Aion2DPSViewer.skill_priorities_cache.json");
 
         Application.Run(new OverlayForm());
     }

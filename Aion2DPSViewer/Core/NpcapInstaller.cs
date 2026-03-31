@@ -33,12 +33,12 @@ public class NpcapInstaller
         if (IsInstalled())
             return true;
         if (MessageBox.Show(
-            "A2Viewer는 패킷 캡처를 위해 Npcap이 필요합니다.\n\n다운로드하여 설치하시겠습니까?\n(설치 화면에서 'WinPcap API-compatible Mode'를 체크해주세요)",
-            "A2Viewer — Npcap 설치 필요",
+            "Aion2Info는 패킷 캡처를 위해 Npcap이 필요합니다.\n\n다운로드하여 설치하시겠습니까?\n(설치 화면에서 'WinPcap API-compatible Mode'를 체크해주세요)",
+            "Aion2Info — Npcap 설치 필요",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question) != DialogResult.Yes)
         {
-            MessageBox.Show("Npcap 없이는 A2Viewer를 사용할 수 없습니다.\n\n수동 설치: https://npcap.com", "A2Viewer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show("Npcap 없이는 Aion2Info를 사용할 수 없습니다.\n\n수동 설치: https://npcap.com", "Aion2Info", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return false;
         }
         try
@@ -61,21 +61,21 @@ public class NpcapInstaller
             });
             if (process == null)
             {
-                MessageBox.Show("Npcap 설치 프로그램을 실행할 수 없습니다.", "A2Viewer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Npcap 설치 프로그램을 실행할 수 없습니다.", "Aion2Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             process.WaitForExit();
             try { File.Delete(installerPath); } catch { }
             if (!IsInstalled())
             {
-                MessageBox.Show("Npcap 설치가 완료되지 않았습니다.\n\n수동 설치: https://npcap.com", "A2Viewer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Npcap 설치가 완료되지 않았습니다.\n\n수동 설치: https://npcap.com", "Aion2Info", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return false;
             }
             return true;
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Npcap 다운로드/설치 중 오류가 발생했습니다.\n\n{ex.Message}\n\n수동 설치: https://npcap.com", "A2Viewer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Npcap 다운로드/설치 중 오류가 발생했습니다.\n\n{ex.Message}\n\n수동 설치: https://npcap.com", "Aion2Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false;
         }
     }
