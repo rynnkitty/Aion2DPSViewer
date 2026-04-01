@@ -847,6 +847,11 @@ public class OverlayForm : Form
                     SendCharacterLoading(nickname, serverId, serverName, "self_login");
                 }));
             };
+            _dpsMeter.NewActorDetected += (nickname, serverId) =>
+            {
+                string serverName = ServerMap.GetName(serverId) ?? "알 수 없음";
+                BeginInvoke((Action)(() => SendCharacterLoading(nickname, serverId, serverName, "new_actor")));
+            };
             sniffer.RawPacket += (src, dst, payload, seq) => _dpsMeter?.FeedPacket(src, dst, payload, seq);
             if (sniffer.ServerPort != 0)
                 _dpsMeter.Start(sniffer.ServerPort);

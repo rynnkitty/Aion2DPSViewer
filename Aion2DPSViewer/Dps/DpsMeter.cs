@@ -223,6 +223,7 @@ public class DpsMeter : IDisposable
         _processor.ContainsSkillCode = code => _db.ContainsSkillCode(code);
         _processor.IsMobBoss = code => _db.IsMobBoss(code);
         _processor.SkillDb = _db;
+        _processor.ValidServerIds = new HashSet<int>(ServerMap.Servers.Keys);
         _processor.OnDamage += new PacketProcessor.DamageHandler(OnDamage);
         _processor.OnMobSpawn += new PacketProcessor.MobSpawnHandler(OnMobSpawn);
         _processor.OnSummon += new PacketProcessor.SummonHandler(OnSummon);
