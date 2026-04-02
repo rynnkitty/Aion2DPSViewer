@@ -461,7 +461,11 @@ public class OverlayForm : Form
             }
         }));
         s.PartyRequest += m => BeginInvoke((Action)(() => SendCharacterLoading(m.Nickname, m.ServerId, m.ServerName, "party_request")));
-        s.PartyAccept += m => BeginInvoke((Action)(() => SendCharacterLoading(m.Nickname, m.ServerId, m.ServerName, "party_accept")));
+        s.PartyAccept += m => BeginInvoke((Action)(() =>
+        {
+            _partyTracker.AddMember(m);
+            SendCharacterLoading(m.Nickname, m.ServerId, m.ServerName, "party_accept");
+        }));
         s.PartyLeft += () => BeginInvoke(new Action(OnPartyDisbanded));
         s.PartyEjected += () => BeginInvoke(new Action(OnPartyDisbanded));
         s.DungeonDetected += (id, stage) => BeginInvoke((Action)(() =>
@@ -852,6 +856,7 @@ public class OverlayForm : Form
                 string serverName = ServerMap.GetName(serverId) ?? "알 수 없음";
                 BeginInvoke((Action)(() => SendCharacterLoading(nickname, serverId, serverName, "new_actor")));
             };
+            _dpsMeter.PartyMemberFilter = key => _partyTracker.IsMember(key);
             sniffer.RawPacket += (src, dst, payload, seq) => _dpsMeter?.FeedPacket(src, dst, payload, seq);
             if (sniffer.ServerPort != 0)
                 _dpsMeter.Start(sniffer.ServerPort);

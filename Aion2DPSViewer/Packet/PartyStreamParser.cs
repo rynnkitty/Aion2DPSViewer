@@ -359,6 +359,29 @@ public class PartyStreamParser
                     break;
                 partyLeft();
                 break;
+            case 31:
+            {
+                // 1F 97: 파티원 개별 업데이트 패킷
+                // 구조: [varint][1F][97][3E][idx][2B][4B][serverId(2B)][nameLen(1B)][name][field(4B)][level(4B)][cp(4B)...]
+                // ParsePartyMemberBlocks는 dataOffset+11에서 nameLen을 탐색하므로 dataOffset-1을 전달
+                if (dataOffset >= 1)
+                {
+                    List<PartyMember> members31 = ParsePartyMemberBlocks(packet, dataOffset - 1);
+                    if (members31.Count > 0)
+                    {
+                        foreach (PartyMember m31 in members31)
+                        {
+                            Console.Error.WriteLine($"[party] 1F 97 파티원: {m31.Nickname}({m31.JobName} Lv{m31.Level} CP{m31.CombatPower})");
+                            Action<PartyMember>? partyAccept31 = PartyAccept;
+                            if (partyAccept31 != null)
+                                partyAccept31(m31);
+                        }
+                    }
+                    else
+                        Console.Error.WriteLine($"[party] 1F 97 파싱실패 ({packet.Length}B)");
+                }
+                break;
+            }
             case 42:
                 _boardRefreshing = true;
                 break;

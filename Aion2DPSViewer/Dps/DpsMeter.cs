@@ -143,6 +143,9 @@ public class DpsMeter : IDisposable
 
     public event Action<string, int>? SelfDetected;
 
+    /// <summary>파티원 여부를 확인하는 필터. 설정되면 RequestMissingActorLookups에서 파티원만 조회.</summary>
+    public Func<string, bool>? PartyMemberFilter { get; set; }
+
     public event Action<string>? LogMessage;
 
     public bool IsRunning => _processor != null;
@@ -736,19 +739,22 @@ public class DpsMeter : IDisposable
 
     private void RequestMissingActorLookups()
     {
+        var filter = PartyMemberFilter;
         foreach (KeyValuePair<int, ActorStats> actor in _actors)
         {
             ActorStats actorStats = actor.Value;
-            if (!string.IsNullOrEmpty(actorStats.WhitelistKey) && actorStats.WhitelistKey != _selfKey && !_jobOverrides.ContainsKey(actorStats.WhitelistKey))
+            if (string.IsNullOrEmpty(actorStats.WhitelistKey) || actorStats.WhitelistKey == _selfKey || _jobOverrides.ContainsKey(actorStats.WhitelistKey))
+                continue;
+            // 파티원 필터가 설정된 경우 파티원만 조회
+            if (filter != null && !filter(actorStats.WhitelistKey))
+                continue;
+            string[] strArray = actorStats.WhitelistKey.Split(new[] { ':' }, StringSplitOptions.None);
+            int num;
+            if (strArray.Length == 2 && int.TryParse(strArray[1], out num))
             {
-                string[] strArray = actorStats.WhitelistKey.Split(new[] { ':' }, StringSplitOptions.None);
-                int num;
-                if (strArray.Length == 2 && int.TryParse(strArray[1], out num))
-                {
-                    Action<string, int>? newActorDetected = NewActorDetected;
-                    if (newActorDetected != null)
-                        newActorDetected(strArray[0], num);
-                }
+                Action<string, int>? newActorDetected = NewActorDetected;
+                if (newActorDetected != null)
+                    newActorDetected(strArray[0], num);
             }
         }
     }

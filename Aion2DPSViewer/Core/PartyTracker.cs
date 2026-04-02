@@ -38,6 +38,14 @@ internal class PartyTracker
         _members.Clear();
     }
 
+    public bool AddMember(PartyMember member)
+    {
+        string key = $"{member.Nickname}:{member.ServerId}";
+        return _members.Add(key);
+    }
+
+    public bool IsMember(string key) => _members.Contains(key);
+
     public void SetSelf(string nickname, int? serverId, string? serverName)
     {
         SelfNickname = nickname;
